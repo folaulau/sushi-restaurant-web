@@ -1,0 +1,61 @@
+name: Build and deploy code to prod S3/Cloudfront
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    outputs:
+      build-folder: ${{ steps.build-folder.outputs.dist-build }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Set React environment variables
+        run: REACT_APP_BUILD_ENV=production
+      - name: Setting version
+        run: echo $GITHUB_SHA > version.txt
+      - name: Install dependencies
+        run: npm install
+      - name: Build app
+        run: npm run build
+      - name: Copy version to application and add build to GH outputs
+        id: build-folder
+        run: |
+          cp version.txt build/version.txt
+          cd build
+          ls
+          echo "::set-output name=dist-build::build"
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-folder
+          path: build
+
+  push-to-PROD:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: prod-env
+    if: contains(github.ref,'main') || contains(github.ref,'release')
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: build-folder
+          path: build 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+      - name: Sync app
+        run: aws s3 sync build s3://sushi.pocsoft.com--delete
+      - name: Copy app
+        run: aws s3 cp s3://sushi.pocsoft.com/index.html s3://sushi.pocsoft.com/index.html --content-type 'text/html' --cache-control 'no-store, max-age=0' --metadata-directive REPLACE
