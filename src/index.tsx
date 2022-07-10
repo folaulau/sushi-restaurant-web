@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import './index.css';
-import App from './App';
+import Home from './pages/home';
 import reportWebVitals from './reportWebVitals';
 
 console.log("app env: " + process.env.REACT_APP_ENV);
@@ -13,7 +15,12 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* <Route path="about" element={<About />} /> */}
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
