@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import './index.css';
 import Home from './pages/home';
 import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 console.log("app env: " + process.env.REACT_APP_ENV);
 console.log("api url: " + process.env.REACT_APP_API_URL);
