@@ -1,25 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
-import './index.css';
-import Home from './pages/home';
-import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "./index.css";
+import Home from "./pages/home";
+import About from "./pages/about";
+import reportWebVitals from "./reportWebVitals";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 console.log("app env: " + process.env.REACT_APP_ENV);
 console.log("api url: " + process.env.REACT_APP_API_URL);
 console.log("graphql url: " + process.env.REACT_APP_GRAPHQL_URL);
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="about" element={<About />} /> */}
+        <Route path="about" element={<About />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
