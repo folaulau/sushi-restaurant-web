@@ -1,5 +1,5 @@
 import Carousel from 'react-bootstrap/Carousel';
-import './landingpage_top.css';
+import './landingpage.css';
 import rev1 from '../../images/landingpage/rev_img1.png';
 import rev2 from '../../images/landingpage/rev_img2.png';
 import rev3 from '../../images/landingpage/rev_img3.png';
