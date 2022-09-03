@@ -55,6 +55,7 @@ function SignUp() {
             navigate("/sign-up/create-profile");
           }).catch((error) => {
             console.error("Error: ", error);
+            setErrorMsg(error.message)
           });
         });
 
