@@ -1,0 +1,40 @@
+
+.menuBox{
+    list-style-type: none;
+    padding: 0px;
+}
+.menuItem{
+    text-decoration: none;
+}
+.menuItemBtn{
+    text-decoration: none !important;
+    font-size: 1.5rem !important;
+    color: #ca3c3f !important;
+}
+.menuCardImg{
+    width: 100%;
+    height: 140px;
+}
+.menuCardTitle{
+    font-weight: bold;
+    font-size: 20px;
+}
+.menuCardCal{
+    font-size: small;
+}
+.menuCardDesc{
+    height: 70px;
+}
+.menuCardPrice{
+    font-size: 17px;
+}
+.menuCardCount{
+    text-align: center;
+    font-size: 18px;
+}
+.menuCardPlus{
+    float: left;
+}
+.menuCardMinus{
+    float: right;
+}
