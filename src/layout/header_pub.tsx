@@ -1,8 +1,29 @@
 import React from "react";
 import logo from "../images/logo.png";
+import { useState , useEffect} from "react";
+import { useContext } from "react";
+import { ShopCartContext } from "../context/shopping-cart";
+
 
 function PublicHeader() {
+
+  const [displayList, setDisplayList] = useState([{
+    name: "",
+    calories: "",
+    desc: "",
+    img: "",
+    price: 0
+  }]);
+
+  // const {content} = useContext(ShopCartContext);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
+    <ShopCartContext.Consumer>
+    {({content}) => (
     <header className="container mt-3">
       <div className="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
         <a
@@ -35,9 +56,20 @@ function PublicHeader() {
           >
             Sign In
           </a>
+          <a
+            className="me-3 py-2 text-dark text-decoration-none"
+            href="/cart"
+          >
+            <i className="fa fa-shopping-cart"></i> 
+            {(content.length>0) && 
+              <span>({content.length})</span>
+            }
+          </a>
         </nav>
       </div>
     </header>
+    )}
+    </ShopCartContext.Consumer>
   );
 }
 
