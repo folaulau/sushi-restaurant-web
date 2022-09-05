@@ -164,17 +164,15 @@ function Menu(props) {
                                 </div>
                               </div>
                               <div className="row">
-                                <div className="col-3 col-md-3 menuCardPrice">
+                                <div className="col-4 col-md-4 menuCardPrice">
                                   ${menuItem.price}
                                 </div>
-                                <div className="col-2 col-md-2 menuCardPlus">
-                                  <button onClick={()=>addMenuItemToCart(menuItem)} type="button" className="btn btn-light"><i className="fas fa-plus"></i></button>
-                                </div>
-                                <div className="col-3 col-md-3 menuCardCount">
-                                {getCartCount(menuItem)}
-                                </div>
-                                <div className="col-2 col-md-2 menuCardMinus">
-                                  <button onClick={()=>removeMenuItemFromCart(menuItem)} type="button" className="btn btn-light"><i className="fas fa-minus"></i></button>
+                                <div className="col-8 col-md-8 text-center menuCardBtns">
+                                  <button onClick={()=>addMenuItemToCart(menuItem)} type="button" className="btn btn-light"><i className="fa fa-plus"></i></button>
+
+                                  <span className="orderCount">{getCartCount(menuItem)}</span>
+                                     
+                                  <button onClick={()=>removeMenuItemFromCart(menuItem)} type="button" className="btn btn-light"><i className="fa fa-minus"></i></button>
                                 </div>
                               </div>
                             </div>

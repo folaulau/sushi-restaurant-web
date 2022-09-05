@@ -26,15 +26,34 @@
     height: 70px;
 }
 .menuCardPrice{
-    font-size: 17px;
+    width: 100%;
+    font-size: 20px;
+    /* border: red solid 1px; */
+    text-align: right !important;
 }
 .menuCardCount{
-    text-align: center;
+    text-align: center !important;
     font-size: 18px;
+    /* border: red solid 1px; */
 }
 .menuCardPlus{
-    float: left;
+    /* border: red solid 1px; */
 }
 .menuCardMinus{
-    float: right;
+    /* border: red solid 1px; */
+}
+
+.menuCardPlusBtn{
+    width: 100%;
+}
+.menuCardPlusBtn i {
+    text-align: center;
+}
+.orderCount{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.menuCardBtns{
+    /* border: solid black 1px; */
+    width: 100%;
 }
