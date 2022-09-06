@@ -2,8 +2,7 @@ import Header from "../layout/header";
 import Footer from "../layout/footer";
 import "./menu.css";
 import { useState , useEffect} from "react";
-import React from 'react';
-import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux'
 import tunaRoll from '../images/menu/rolls/tuna-roll.jpeg';
 import salmonRoll from '../images/menu/rolls/salmon-roll.jpeg';
 import yakiRoll from '../images/menu/rolls/yaki-niku-roll.jpeg';
@@ -17,26 +16,22 @@ import cookiesDes from '../images/menu/desserts/cookies.jpeg';
 import browniesDes from '../images/menu/desserts/brownies.jpeg';
 import churrosDes from '../images/menu/desserts/churros.jpeg';
 import iceCreamDes from '../images/menu/desserts/ice-cream.jpeg';
-import { useContext } from "react";
-import { ShopCartContext } from "../context/shopping-cart";
+import { add, remove } from "../store/cart"
+
 
 function Menu(props) {
 
-  const [shopCart, setShopCart] = useState([]);
+  const cartContent = useSelector((state) => state.cart.content)
+  const cartContentCount = useSelector((state) => state.cart.contentCount)
 
-  // map to keep track of shopping cart item count, it's really expensive to loop
-  const [shopCartCount, setShopCartCount] = useState({});
+  const dispatch = useDispatch()
 
-  const [displayList, setDisplayList] = useState([{
-    name: "",
-    calories: "",
-    desc: "",
-    img: "",
-    price: 0
-  }]);
+  const [displayList, setDisplayList] = useState([]);
 
   useEffect(() => {
     setDisplayList(sushiList)
+    console.log("cartContent, ", cartContent)
+    console.log("cartContentCount, ", cartContentCount)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -58,64 +53,25 @@ function Menu(props) {
   }
 
   const getCartCount = (menuItem) => {
-    // console.log("getCartCount, ", menuItem)
-    let count = shopCartCount[menuItem.name];
+    let count = cartContentCount[menuItem.uuid];
     return count ? count : 0;
   }
 
   const addMenuItemToCart = (menuItem) => {
-    console.log("addMenuItemToCart, ", menuItem)
-    console.log("shopCart, ", shopCart)
-    console.log("shopCartCount, ", shopCartCount)
-    shopCart.push(menuItem);
-    const newShopCart = shopCart.map(obj => obj);
-    setShopCart(newShopCart);
+    
+    dispatch(add(menuItem))
 
-    let count = shopCartCount[menuItem.name];
-
-    const newShopCartCount = Object.assign({}, shopCartCount);
-    newShopCartCount[menuItem.name] = count ? ++count : 1;
-    setShopCartCount(newShopCartCount);
   }
 
   const removeMenuItemFromCart  = (menuItem) => {
-    // console.log("removeMenuItemFromCart, ", menuItem)
-    // console.log("shopCart, ", shopCart)
-    // console.log("shopCart length, ", shopCart.length)
 
-    if(shopCart.length===0){
-      console.log("nothing to remove from cart")
-      return;
-    }
-    
-    const indexToRemove = shopCart.findIndex((obj,index) => {
-      return obj.name===menuItem.name
-    });
+    dispatch(remove(menuItem))
 
-    console.log("indexToRemove, ", indexToRemove)
-
-    if(indexToRemove===-1){
-      console.log("couldn't find element to remove")
-      return;
-    }
-
-    shopCart.splice(indexToRemove,1);
-
-    const newShopCart = shopCart.map(obj => obj);
-    setShopCart(newShopCart);
-
-    let count = shopCartCount[menuItem.name];
-
-    const newShopCartCount = Object.assign({}, shopCartCount);
-    newShopCartCount[menuItem.name] = --count;
-    setShopCartCount(newShopCartCount);
   }
 
 
   return (
     <>
-      <ShopCartContext.Provider value={{content: shopCart, contentCount: shopCartCount}}>
-      
       {(props.from==='' || props.from==null) && <Header />}
       
         <div className="container">
@@ -186,7 +142,6 @@ function Menu(props) {
           </div>
         </div>
       <Footer />
-      </ShopCartContext.Provider>
     </>
   );
 }
@@ -215,7 +170,7 @@ const sushiList = [
     desc: "Crunchy rice, tuna tartare, negi, aonori",
     img: tunaRoll,
     price: 10,
-    uuid: ""
+    uuid: "TUNA_ROLL"
   },
   {
     name: "Salmon Roll",
@@ -223,7 +178,7 @@ const sushiList = [
     desc: "Crunchy rice, tuna tartare, negi, aonori",
     img: salmonRoll,
     price: 12,
-    uuid: ""
+    uuid: "SALMON_ROLL"
   },
   {
     name: "Yaki Roll",
@@ -231,7 +186,7 @@ const sushiList = [
     desc: "Crunchy rice, tuna tartare, negi, aonori",
     img: yakiRoll,
     price: 15,
-    uuid: ""
+    uuid: "YAKI_ROLL"
   },
   {
     name: "Vegetarian Roll",
@@ -239,7 +194,7 @@ const sushiList = [
     desc: "Crunchy rice, tuna tartare, negi, aonori",
     img: vegetarianRoll,
     price: 15,
-    uuid: ""
+    uuid: "VEGETARIAN_ROLL"
   }
 ]
 
@@ -250,7 +205,7 @@ const drinkList = [
     desc: "fanta",
     img: fantaDrink,
     price: 2,
-    uuid: ""
+    uuid: "FANTA"
   },
   {
     name: "Coca Cola",
@@ -258,7 +213,7 @@ const drinkList = [
     desc: "Coke",
     img: cokeDrink,
     price: 3,
-    uuid: ""
+    uuid: "COKE"
   },
   {
     name: "Orange Juice",
@@ -266,7 +221,7 @@ const drinkList = [
     desc: "Juice",
     img: orangeDrink,
     price: 3,
-    uuid: ""
+    uuid: "ORGANCE_JUICE"
   },
   {
     name: "Hawaiian Punch",
@@ -274,7 +229,7 @@ const drinkList = [
     desc: "Fruit Punch",
     img: punchDrink,
     price: 2,
-    uuid: ""
+    uuid: "HAWAIIAN_PUNCH"
   }
 ]
 
@@ -285,7 +240,7 @@ const dessertList = [
     desc: "Cookie",
     img: cookiesDes,
     price: 1.5,
-    uuid: ""
+    uuid: "COOKIES"
   },
   {
     name: "Churros",
@@ -293,7 +248,7 @@ const dessertList = [
     desc: "Churros",
     img: churrosDes,
     price: 2,
-    uuid: ""
+    uuid: "CHURROS"
   },
   {
     name: "Brownies",
@@ -301,7 +256,7 @@ const dessertList = [
     desc: "Brownie",
     img: browniesDes,
     price: 3,
-    uuid: ""
+    uuid: "BROWNIES"
   },
   {
     name: "Ice Cream",
@@ -309,6 +264,6 @@ const dessertList = [
     desc: "Ice cream",
     img: iceCreamDes,
     price: 2,
-    uuid: ""
+    uuid: "ICE_CREAM"
   }
 ]
