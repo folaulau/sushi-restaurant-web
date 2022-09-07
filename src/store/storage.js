@@ -1,19 +1,31 @@
 
 const Storage = {
 
-    set: (key, json) => {
-        
+    setJson: (key, json) => {
         localStorage.setItem(key, JSON.stringify(json))
-        
     },
-    get: (key) => {
+    getJson: (key) => {
         
         let value = localStorage.getItem(key)
 
         if(value){
             return JSON.parse(value);
         }
+
         return {}
+    },
+    set: (key, value) => {
+        localStorage.setItem(key, value+"")
+    },
+    get: (key) => {
+        
+        let value = localStorage.getItem(key)
+
+        if(value){
+            return value;
+        }
+
+        return null
     }
 }
 

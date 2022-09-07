@@ -4,7 +4,7 @@ import Calculator from '../utils/calculator';
 
 const storeName = "cart"
 
-var cart = Storage.get(storeName)
+var cart = Storage.getJson(storeName)
 
 let cartContent = cart['content'] ? cart['content'] : []
 let contentCount = cart['count'] ? cart['count'] : {}
@@ -40,8 +40,7 @@ export const cartSlice = createSlice({
         cart['count'] = state.contentCount
         cart['totalCount'] = state.totalCount
 
-        Storage.set(storeName, cart);
-
+        Storage.setJson(storeName, cart);
     },
     remove: (state, action) => {
         let menuItem = action.payload;
@@ -62,8 +61,7 @@ export const cartSlice = createSlice({
       
         state.content.splice(indexToRemove,1);
       
-        let count = state.contentCount[menuItem.uuid];
-        state.contentCount[menuItem.uuid] = --count;
+        state.contentCount[menuItem.uuid] = 0;
 
         state.totalCount = Calculator.calculateCartTotalItemCount(state.contentCount);
 
@@ -71,7 +69,7 @@ export const cartSlice = createSlice({
         cart['count'] = state.contentCount
         cart['totalCount'] = state.totalCount
 
-        Storage.set(storeName, cart);
+        Storage.setJson(storeName, cart);
     },
     removeAll: (state, action) => {
         state.content = [];
@@ -84,7 +82,7 @@ export const cartSlice = createSlice({
         cart['count'] = state.contentCount
         cart['totalCount'] = state.totalCount
 
-        Storage.set(storeName, cart);
+        Storage.setJson(storeName, cart);
     },
     changeQuantity: (state, action) => {
         let payload = action.payload;
@@ -92,10 +90,11 @@ export const cartSlice = createSlice({
 
         state.totalCount = Calculator.calculateCartTotalItemCount(state.contentCount);
 
+        cart['content'] = state.content
         cart['count'] = state.contentCount
         cart['totalCount'] = state.totalCount
 
-        Storage.set(storeName, cart);
+        Storage.setJson(storeName, cart);
     },
   },
 })

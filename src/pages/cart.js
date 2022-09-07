@@ -3,7 +3,7 @@ import Footer from "../layout/footer";
 import { useState, useEffect} from "react";
 import "./cart.css";
 import { useSelector, useDispatch } from 'react-redux'
-import { changeQuantity , removeAll} from "../store/cart"
+import { changeQuantity , removeAll, remove} from "../store/cart"
 import ConfirmationModal from "../components/modal/confirmation";
 
 function Cart(props) {
@@ -22,6 +22,7 @@ function Cart(props) {
   }, []);
 
   const removeMenuItemFromCart  = (menuItem) => {
+    dispatch(remove(menuItem))
   }
 
   const changeQty = (e) => {
