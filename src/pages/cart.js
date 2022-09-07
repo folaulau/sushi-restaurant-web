@@ -68,7 +68,7 @@ function Cart(props) {
                 <div className="col-12 col-md-9">
                   <div className="row">
                     <div className="col-9 col-md-10">
-                      <button type="button"  className="btn btn-outline-danger btn-sm" onClick={()=>deleteAll()}>delete all</button>
+                      <button type="button" disabled={(cartContent.length===0)}  className="btn btn-outline-danger btn-sm" onClick={()=>deleteAll()}>delete all</button>
                     </div>
                     <div className="col-3 col-md-2">
                       Price
