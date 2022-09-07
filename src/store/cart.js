@@ -1,13 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit'
-
+import Storage from './storage';
 import Calculator from '../utils/calculator';
 
+const storeName = "cart"
+
+let cart = Storage.get(storeName)
+
+let cartContent = cart['content'] ? cart['content'] : []
+let contentCount = cart['count'] ? cart['count'] : {}
+let totalCount = cart['totalCount'] ? cart['totalCount'] : 0
+
 export const cartSlice = createSlice({
-  name: 'cart',
+  name: storeName,
   initialState: {
-    content: [],
-    contentCount: {},
-    totalCount: 0
+    content: cartContent,
+    contentCount: contentCount,
+    totalCount: totalCount
   },
   reducers: {
     setNewCart: (state, action) => {
@@ -31,9 +39,13 @@ export const cartSlice = createSlice({
         let count = state.contentCount[menuItem.uuid];
         state.contentCount[menuItem.uuid] = count ? ++count : 1;
 
-
-
         state.totalCount = Calculator.calculateCartTotalItemCount(state.contentCount);
+
+        cart['content'] = state.content
+        cart['count'] = state.contentCount
+        cart['totalCount'] = state.totalCount
+
+        Storage.set(storeName, cart);
 
     },
     remove: (state, action) => {
@@ -59,6 +71,12 @@ export const cartSlice = createSlice({
         state.contentCount[menuItem.uuid] = --count;
 
         state.totalCount = Calculator.calculateCartTotalItemCount(state.contentCount);
+
+        cart['content'] = state.content
+        cart['count'] = state.contentCount
+        cart['totalCount'] = state.totalCount
+
+        Storage.set(storeName, cart);
     },
     removeAll: (state, action) => {
         state.content = [];
@@ -66,12 +84,23 @@ export const cartSlice = createSlice({
         state.totalCount = 0;
 
         state.totalCount = 0;
+
+        cart['content'] = state.content
+        cart['count'] = state.contentCount
+        cart['totalCount'] = state.totalCount
+
+        Storage.set(storeName, cart);
     },
     changeQuantity: (state, action) => {
         let payload = action.payload;
         state.contentCount[payload.uuid] = payload.count;
 
         state.totalCount = Calculator.calculateCartTotalItemCount(state.contentCount);
+
+        cart['count'] = state.contentCount
+        cart['totalCount'] = state.totalCount
+
+        Storage.set(storeName, cart);
     },
   },
 })

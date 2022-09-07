@@ -120,15 +120,16 @@ function Menu(props) {
                                 </div>
                               </div>
                               <div className="row">
-                                <div className="col-4 col-md-4 menuCardPrice">
-                                  ${menuItem.price}
+                                <div className="col-4 col-md-5 menuCardPrice">
+                                  ${menuItem.price.toFixed(2)}
                                 </div>
-                                <div className="col-8 col-md-8 text-center menuCardBtns">
-                                  <button onClick={()=>addMenuItemToCart(menuItem)} type="button" className="btn btn-light"><i className="fa fa-plus"></i></button>
+                                <div className="col-8 col-md-7 text-center menuCardBtns">
+                                {/* style={{border: `solid 1px red`}} */}
+                                  <button onClick={()=>addMenuItemToCart(menuItem)} type="button" className="btn btn-light btn-sm"><i className="fa fa-plus"></i></button>
 
                                   <span className="orderCount">{getCartCount(menuItem)}</span>
                                      
-                                  <button onClick={()=>removeMenuItemFromCart(menuItem)} type="button" className="btn btn-light"><i className="fa fa-minus"></i></button>
+                                  <button onClick={()=>removeMenuItemFromCart(menuItem)} type="button" className="btn btn-light btn-sm"><i className="fa fa-minus"></i></button>
                                 </div>
                               </div>
                             </div>
@@ -239,7 +240,7 @@ const dessertList = [
     calories: "200 g | 6 pieces | 360 kcal",
     desc: "Cookie",
     img: cookiesDes,
-    price: 1.5,
+    price: 1.50,
     uuid: "COOKIES"
   },
   {

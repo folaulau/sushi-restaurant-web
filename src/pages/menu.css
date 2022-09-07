@@ -9,7 +9,6 @@
 .menuItemBtn{
     text-decoration: none !important;
     font-size: 1.5rem !important;
-    color: #ca3c3f !important;
 }
 .menuCardImg{
     width: 100%;
@@ -27,9 +26,10 @@
 }
 .menuCardPrice{
     width: 100%;
-    font-size: 20px;
+    font-size: 18px;
     /* border: red solid 1px; */
     text-align: right !important;
+    padding: 0;
 }
 .menuCardCount{
     text-align: center !important;
@@ -52,6 +52,7 @@
 .orderCount{
     margin-left: 10px;
     margin-right: 10px;
+    font-size: 18px;
 }
 .menuCardBtns{
     /* border: solid black 1px; */
