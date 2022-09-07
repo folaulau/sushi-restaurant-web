@@ -7,7 +7,7 @@ function CartIcon() {
 
   return (
     <Link to="/cart" className="me-3 py-2 text-dark text-decoration-none">
-        <i className="fa fa-shopping-cart"></i>
+        <i className="fa fa-shopping-cart fa-8x"></i>
         {(totalCount>0) && 
             <span>({totalCount})</span>
         }

@@ -1,11 +1,10 @@
 import { useState , useEffect} from "react";
-import React from 'react';
 import { useNavigate } from "react-router-dom";
 import Header from "../layout/header";
 import Footer from "../layout/footer";
 import FirebaseApi from "../api/FirebaseApi";
 import UserApi from "../api/UserApi";
-
+import Auth from "../components/auth/auth";
 
 function SignUp() {
 
@@ -52,7 +51,10 @@ function SignUp() {
           UserApi.authenticate(authentication).then((response) => {
             console.log("response: ", response);
 
-            navigate("/sign-up/create-profile");
+            Auth.signIn(response.data);
+
+            navigate("/menu");
+            
           }).catch((error) => {
             console.error("Error: ", error);
             setErrorMsg(error.message)

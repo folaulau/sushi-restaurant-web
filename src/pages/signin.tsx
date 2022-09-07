@@ -5,6 +5,7 @@ import React from 'react';
 import { useNavigate } from "react-router-dom";
 import FirebaseApi from "../api/FirebaseApi";
 import UserApi from "../api/UserApi";
+import Auth from "../components/auth/auth";
 
 function SignIn() {
 
@@ -50,7 +51,10 @@ function SignIn() {
           UserApi.authenticate(authentication).then((response) => {
             console.log("response: ", response);
 
-            navigate("/sign-up/create-profile");
+            Auth.signIn(response.data);
+
+            navigate("/menu");
+            
           }).catch((error) => {
             console.error("Error: ", error);
             setErrorMsg(error.message)
