@@ -4,7 +4,7 @@ import Calculator from '../utils/calculator';
 
 const storeName = "cart"
 
-let cart = Storage.get(storeName)
+var cart = Storage.get(storeName)
 
 let cartContent = cart['content'] ? cart['content'] : []
 let contentCount = cart['count'] ? cart['count'] : {}
