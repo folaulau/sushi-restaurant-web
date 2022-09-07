@@ -1,9 +1,10 @@
 import Header from "../layout/header";
 import Footer from "../layout/footer";
-import { useEffect} from "react";
+import { useState, useEffect} from "react";
 import "./cart.css";
 import { useSelector, useDispatch } from 'react-redux'
-import { changeQuantity } from "../store/cart"
+import { changeQuantity , removeAll} from "../store/cart"
+import ConfirmationModal from "../components/modal/confirmation";
 
 function Cart(props) {
 
@@ -12,7 +13,7 @@ function Cart(props) {
 
   const dispatch = useDispatch()
 
-  // const [shopCart, setShopCart] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     console.log("cartContentCount, ",cartContentCount)
@@ -32,6 +33,23 @@ function Cart(props) {
     dispatch(changeQuantity(payload))
   }
 
+  const deleteAll = () => {
+    console.log("deleteAll")
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteAll = (answer) => {
+    console.log("confirmDeleteAll, answer, ", answer)
+
+    if(answer==='confirm'){
+      dispatch(removeAll())
+    }
+
+    setShowDeleteModal(false)
+  }
+
+
+
 
   return (
     <>
@@ -50,7 +68,7 @@ function Cart(props) {
                 <div className="col-12 col-md-9">
                   <div className="row">
                     <div className="col-9 col-md-10">
-                      <button type="button"  className="btn btn-outline-danger btn-sm" onClick={()=>removeMenuItemFromCart()}>delete all</button>
+                      <button type="button"  className="btn btn-outline-danger btn-sm" onClick={()=>deleteAll()}>delete all</button>
                     </div>
                     <div className="col-3 col-md-2">
                       Price
@@ -116,6 +134,7 @@ function Cart(props) {
             </div>
           </div>
         </div>
+      <ConfirmationModal show={showDeleteModal} confirm={confirmDeleteAll} question={`Are you sure you want to remove all items from your cart?`} close={()=>confirmDeleteAll(false)}/>
       <Footer />
     </>
   );
