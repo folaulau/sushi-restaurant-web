@@ -18,11 +18,6 @@ export const cartSlice = createSlice({
     totalCount: totalCount
   },
   reducers: {
-    setNewCart: (state, action) => {
-      let payload = action.payload;
-      state.content = payload.content;
-      state.contentCount = payload.contentCount;
-    },
     add: (state, action) => {
         let menuItem = action.payload;
 
@@ -106,6 +101,6 @@ export const cartSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setNewCart, add, remove, removeAll, changeQuantity } = cartSlice.actions
+export const { add, remove, removeAll, changeQuantity } = cartSlice.actions
 
 export default cartSlice.reducer
