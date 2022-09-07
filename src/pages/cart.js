@@ -5,6 +5,7 @@ import "./cart.css";
 import { useSelector, useDispatch } from 'react-redux'
 import { changeQuantity , removeAll, remove} from "../store/cart"
 import ConfirmationModal from "../components/modal/confirmation";
+import PaymentModal from "../components/modal/payment";
 
 function Cart(props) {
 
@@ -14,6 +15,7 @@ function Cart(props) {
   const dispatch = useDispatch()
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
     console.log("cartContentCount, ",cartContentCount)
@@ -37,6 +39,16 @@ function Cart(props) {
   const deleteAll = () => {
     console.log("deleteAll")
     setShowDeleteModal(true)
+  }
+
+  const payOrder = () => {
+    console.log("payOrder")
+
+    setShowPaymentModal(true)
+  }
+
+  const confirmOrder = (message) => {
+    console.log("confirmOrder")
   }
 
   const confirmDeleteAll = (answer) => {
@@ -126,7 +138,7 @@ function Cart(props) {
                 <div className="col-12 col-md-3">
                   <div className="row">
                     <div className="col-12 col-md-12">
-                      <DisplayPaymentTab content={cartContent} count={cartContentCount} />
+                      <DisplayPaymentTab pay={payOrder} content={cartContent} count={cartContentCount} />
                       
                     </div>
                   </div>
@@ -136,6 +148,7 @@ function Cart(props) {
           </div>
         </div>
       <ConfirmationModal show={showDeleteModal} confirm={confirmDeleteAll} question={`Are you sure you want to remove all items from your cart?`} close={()=>confirmDeleteAll(false)}/>
+      <PaymentModal show={showPaymentModal} confirm={confirmOrder} close={()=>setShowPaymentModal(false)} />
       <Footer />
     </>
   );
@@ -173,7 +186,7 @@ const DisplayPaymentTab  = (props) => {
       <div className="row mt-3">
         <div className="col-12 col-md-12">
           <div className="d-grid gap-2">
-            <button className="btn btn-primary" disabled={btnDisabled} type="button">Pay</button>
+            <button className="btn btn-primary" onClick={()=>props.pay()} disabled={btnDisabled} type="button">Pay</button>
           </div>
         </div>
       </div>
