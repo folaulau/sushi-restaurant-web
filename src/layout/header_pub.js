@@ -1,6 +1,7 @@
 import logo from "../images/logo.png";
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux'
+import CartIcon from "../components/cart-icon";
 
 function PublicHeader() {
 
@@ -26,12 +27,13 @@ function PublicHeader() {
 
           <Link to="/signin" className="me-3 py-2 text-dark text-decoration-none">Sign In</Link>
 
-          <Link to="/cart" className="me-3 py-2 text-dark text-decoration-none">
+          <CartIcon />
+          {/* <Link to="/cart" className="me-3 py-2 text-dark text-decoration-none">
             <i className="fa fa-shopping-cart"></i> 
             {(cartStoreContentSize>0) && 
               <span>({cartStoreContentSize})</span>
             }
-          </Link>
+          </Link> */}
         </nav>
       </div>
     </header>

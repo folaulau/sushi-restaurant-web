@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+import Calculator from '../utils/calculator';
+
 export const cartSlice = createSlice({
   name: 'cart',
   initialState: {
     content: [],
-    contentCount: {}
+    contentCount: {},
+    totalCount: 0
   },
   reducers: {
     setNewCart: (state, action) => {
@@ -27,6 +30,11 @@ export const cartSlice = createSlice({
 
         let count = state.contentCount[menuItem.uuid];
         state.contentCount[menuItem.uuid] = count ? ++count : 1;
+
+
+
+        state.totalCount = Calculator.calculateCartTotalItemCount(state.contentCount);
+
     },
     remove: (state, action) => {
         let menuItem = action.payload;
@@ -49,14 +57,21 @@ export const cartSlice = createSlice({
       
         let count = state.contentCount[menuItem.uuid];
         state.contentCount[menuItem.uuid] = --count;
+
+        state.totalCount = Calculator.calculateCartTotalItemCount(state.contentCount);
     },
     removeAll: (state, action) => {
         state.content = [];
         state.contentCount = {};
+        state.totalCount = 0;
+
+        state.totalCount = 0;
     },
     changeQuantity: (state, action) => {
         let payload = action.payload;
         state.contentCount[payload.uuid] = payload.count;
+
+        state.totalCount = Calculator.calculateCartTotalItemCount(state.contentCount);
     },
   },
 })
