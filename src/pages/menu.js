@@ -80,7 +80,7 @@ function Menu(props) {
               <h1>Explore Our Menu</h1>
             
               <div className="row">
-                <div className="col-3 col-md-3">
+                <div className="col-12 col-md-3">
                   <ul className="menuBox">
                     {menuList.map((item) => (
                       <li className="menuItem" key={item.type}>
@@ -92,7 +92,7 @@ function Menu(props) {
                     ))}
                   </ul>
                 </div>
-                <div className="col-9 col-md-9">
+                <div className="col-12 col-md-9">
                   <div className="row">
                     
                       {displayList.map((menuItem)=>(

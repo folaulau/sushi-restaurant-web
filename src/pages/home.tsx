@@ -15,7 +15,7 @@ function Home() {
               <LandingPage/>
             </div>
           </div>
-          <div className="row">
+          <div className="row mt-5">
             <div className="col-12">
               <Menu from='home'/>
             </div>
