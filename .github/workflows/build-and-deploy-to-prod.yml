@@ -56,6 +56,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
       - name: Sync app
-        run: aws s3 sync build s3://sushi.pocsoft.com --delete --exclude backend-resources
+        run: aws s3 sync build s3://sushi.pocsoft.com --delete --exclude "*backend-resources/*"
       - name: Copy app
         run: aws s3 cp s3://sushi.pocsoft.com/index.html s3://sushi.pocsoft.com/index.html --content-type 'text/html' --cache-control 'no-store, max-age=0' --metadata-directive REPLACE
