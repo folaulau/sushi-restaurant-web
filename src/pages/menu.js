@@ -16,22 +16,42 @@ import cookiesDes from '../images/menu/desserts/cookies.jpeg';
 import browniesDes from '../images/menu/desserts/brownies.jpeg';
 import churrosDes from '../images/menu/desserts/churros.jpeg';
 import iceCreamDes from '../images/menu/desserts/ice-cream.jpeg';
-import { add, remove } from "../store/cart"
+import { set, add, remove } from "../store/cart"
+import OrderApi from "../api/OrderApi";
 
+import Auth from "../components/auth/auth";
 
 function Menu(props) {
 
-  const cartContent = useSelector((state) => state.cart.content)
-  const cartContentCount = useSelector((state) => state.cart.contentCount)
+  const lineItems = useSelector((state) => state.cart.lineItems)
+  const orderUuid = useSelector((state) => state.cart.uuid)
 
   const dispatch = useDispatch()
 
   const [displayList, setDisplayList] = useState([]);
+  const [auth, setAuth] = useState({});
 
   useEffect(() => {
     setDisplayList(sushiList)
-    console.log("cartContent, ", cartContent)
-    console.log("cartContentCount, ", cartContentCount)
+    console.log("lineItems, ", lineItems)
+    console.log("orderUuid, ", orderUuid)
+
+    setAuth(Auth.getAuth())
+
+    if(orderUuid!=null){
+      OrderApi.getOrder(orderUuid)
+      .then((response)=>{
+        let updatedOrder = response.data;
+
+        console.log("order, ", updatedOrder)
+
+        dispatch(set(updatedOrder))
+      })
+      .catch((error)=>{
+          console.log("error, ", error.response.data)
+      });
+    }
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -52,20 +72,103 @@ function Menu(props) {
     }
   }
 
-  const getCartCount = (menuItem) => {
-    let count = cartContentCount[menuItem.uuid];
-    return count ? count : 0;
-  }
+  const addProductToCart = (product) => {
 
-  const addMenuItemToCart = (menuItem) => {
+    console.log("lineItems, ", lineItems)
+
+    let newLineItems = lineItems.map((i)=>i)
+
+    const index = newLineItems.findIndex((obj,index) => {
+      return obj.product.uuid===product.uuid
+    });
+
+    let lineItem = {product: product, count: 0}
+
+    if(index===-1){
+        lineItem.count = 1;
+    }else{
+        lineItem = Object.assign({}, newLineItems[index]);
+        lineItem.count = ++lineItem.count
+    }
+
+    let order = {
+        userUuid: auth ? auth.uuid : null ,
+        uuid: orderUuid,
+        lineItem: lineItem,
+        type: "ADD"
+    }
+
+    console.log("order, ", order)
     
-    dispatch(add(menuItem))
+    OrderApi.createUpdateOrder(order)
+    .then((response)=>{
+      console.log("response.data, ", response.data)
+
+        let updatedOrder = response.data;
+
+        dispatch(set(updatedOrder))
+
+    })
+    .catch((error)=>{
+        console.log("error, ", error)
+    });
+    
+    
 
   }
 
-  const removeMenuItemFromCart  = (menuItem) => {
+  const removeProductFromCart  = (product) => {
 
-    dispatch(remove(menuItem))
+    console.log("lineItems, ", lineItems)
+
+    let newLineItems = lineItems.map((i)=>i)
+
+    const index = newLineItems.findIndex((obj,index) => {
+      return obj.product.uuid===product.uuid
+    });
+
+    let lineItem = {product: product, count: 0}
+
+    if(index===-1){
+      console.log("couldn't find element to remove")
+      return;
+    }else{
+      lineItem = Object.assign({}, newLineItems[index]);
+      lineItem.count = --lineItem.count
+    }
+
+    let type = ""
+
+    if(lineItem.count==0){
+      // remove from order
+      type = "REMOVE"
+    }else{
+      // reduce count but not remove from order
+      type = "ADD"
+    }
+
+    let order = {
+        userUuid: auth ? auth.uuid : null ,
+        uuid: orderUuid,
+        lineItem: lineItem,
+        type: type
+    }
+
+    console.log("order, ", order)
+    
+    OrderApi.createUpdateOrder(order)
+    .then((response)=>{
+        console.log("response.data, ", response.data)
+
+        let updatedOrder = response.data;
+
+        dispatch(set(updatedOrder))
+
+    })
+    .catch((error)=>{
+        console.log("error, ", error)
+    });
+    // dispatch(remove(product))
 
   }
 
@@ -95,41 +198,41 @@ function Menu(props) {
                 <div className="col-12 col-md-9">
                   <div className="row">
                     
-                      {displayList.map((menuItem)=>(
-                        <div className="col-12 col-md-3" key={menuItem.name}>
+                      {displayList.map((product)=>(
+                        <div className="col-12 col-md-3" key={product.name}>
                           <div className="card">
                             <div className="card-body">
                               <img
-                                src={menuItem.img}
+                                src={product.img}
                                 alt="First slide"
                                 className="menuCardImg"
                               />
                               <div className="row">
                                 <div className="col-12 menuCardTitle">
-                                  {menuItem.name}
+                                  {product.name}
                                 </div>
                               </div>
                               <div className="row">
                                 <div className="col-12 menuCardCal">
-                                  {menuItem.calories}
+                                  {product.calories}
                                 </div>
                               </div>
                               <div className="row">
                                 <div className="col-12 menuCardDesc">
-                                  {menuItem.desc}
+                                  {product.desc}
                                 </div>
                               </div>
                               <div className="row">
                                 <div className="col-4 col-md-5 menuCardPrice">
-                                  ${menuItem.price.toFixed(2)}
+                                  ${product.price.toFixed(2)}
                                 </div>
                                 <div className="col-8 col-md-7 text-center menuCardBtns">
                                 {/* style={{border: `solid 1px red`}} */}
-                                  <button onClick={()=>addMenuItemToCart(menuItem)} type="button" className="btn btn-light btn-sm"><i className="fa fa-plus"></i></button>
+                                  <button onClick={()=>addProductToCart(product)} type="button" className="btn btn-light btn-sm"><i className="fa fa-plus"></i></button>
 
-                                  <span className="orderCount">{getCartCount(menuItem)}</span>
+                                  <OrderProductCount lineItems={lineItems} product={product} />
                                      
-                                  <button onClick={()=>removeMenuItemFromCart(menuItem)} type="button" className="btn btn-light btn-sm"><i className="fa fa-minus"></i></button>
+                                  <button onClick={()=>removeProductFromCart(product)} type="button" className="btn btn-light btn-sm"><i className="fa fa-minus"></i></button>
                                 </div>
                               </div>
                             </div>
@@ -148,6 +251,33 @@ function Menu(props) {
 }
 
 export default Menu;
+
+const OrderProductCount  = (props) => {
+
+
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let lineItems = props.lineItems.filter((item)=>{
+      return props.product.uuid===item.product.uuid;
+    })
+
+    if(lineItems.length!==0){
+      let lineItem = lineItems[0];
+      setCount(lineItem.count)
+    }
+
+    console.log("set count")
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <>
+      <span className="orderCount">{count}</span>
+    </>
+  )
+}
 
 const menuList = [
   {

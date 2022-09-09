@@ -1,46 +1,82 @@
 import { createSlice } from '@reduxjs/toolkit'
 import Storage from './storage';
 import Calculator from '../utils/calculator';
+import OrderApi from '../api/OrderApi';
 
 const storeName = "cart"
 
 var cart = Storage.getJson(storeName)
 
-let cartContent = cart['content'] ? cart['content'] : []
-let contentCount = cart['count'] ? cart['count'] : {}
-let totalCount = cart['totalCount'] ? cart['totalCount'] : 0
+let lineItems = cart['lineItems'] ? cart['lineItems'] : []
+let totalItemCount = cart['totalItemCount'] ? cart['totalItemCount'] : 0
+let uuid = cart['uuid'] ? cart['uuid'] : null
+let total = cart['total'] ? cart['total'] : 0
 
 export const cartSlice = createSlice({
   name: storeName,
   initialState: {
-    content: cartContent,
-    contentCount: contentCount,
-    totalCount: totalCount
+    uuid: uuid,
+    lineItems: lineItems,
+    totalItemCount: totalItemCount,
+    total: total
   },
   reducers: {
-    add: (state, action) => {
-        let menuItem = action.payload;
+    set: (state, action) => {
+        let order = action.payload;
 
-        const index = state.content.findIndex((obj,index) => {
-            return obj.uuid===menuItem.uuid
+        cart['lineItems'] = state.lineItems = order.lineItems;
+        cart['uuid'] = state.uuid = order.uuid;
+        cart['totalItemCount'] = state.totalItemCount = order.totalItemCount;
+        cart['total'] = state.total = order.total;
+
+        Storage.setJson(storeName, order);
+
+        console.log("set new cart", state.lineItems)
+    },
+    add: (state, action) => {
+        let product = action.payload;
+
+        const index = state.lineItems.findIndex((obj,index) => {
+            return obj.product.uuid===product.uuid
         });
       
+        let lineItem = {product: product, count: 0}
+
         if(index===-1){
-            state.content.push(menuItem);
+            lineItem.count = 1;
+            state.lineItems.push(lineItem);
+        }else{
+            lineItem = state.lineItems[index]
+            lineItem.count = ++lineItem.count
+            state.lineItems[index] = lineItem
         }
 
-        console.log("menuItem, ",menuItem)
+        console.log("lineItem, ",lineItem)
 
-        let count = state.contentCount[menuItem.uuid];
-        state.contentCount[menuItem.uuid] = count ? ++count : 1;
+        
 
-        state.totalCount = Calculator.calculateCartTotalItemCount(state.contentCount);
+        let order = {
+            uuid: state.uuid,
+            lineItems: state.lineItems
+        }
+        
+        OrderApi.createUpdateOrder(order)
+        .then((response)=>{
+            console.log("response, ", response)
 
-        cart['content'] = state.content
-        cart['count'] = state.contentCount
-        cart['totalCount'] = state.totalCount
+            let updatedOrder = response.data;
+            state.lineItems = updatedOrder.lineItems;
+            state.uuid = updatedOrder.uuid;
+            state.totalItemCount = updatedOrder.totalItemCount;
+            state.total = updatedOrder.total;
 
-        Storage.setJson(storeName, cart);
+            Storage.setJson(storeName, updatedOrder);
+        })
+        .catch((error)=>{
+            console.log("error, ", error)
+        });
+
+        
     },
     remove: (state, action) => {
         let menuItem = action.payload;
@@ -100,6 +136,6 @@ export const cartSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { add, remove, removeAll, changeQuantity } = cartSlice.actions
+export const { set, add, remove, removeAll, changeQuantity } = cartSlice.actions
 
 export default cartSlice.reducer
