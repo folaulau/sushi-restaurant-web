@@ -9,31 +9,46 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 import "./payment.css";
+import Storage from '../../store/storage';
 
 function PaymentModal(props) {
 
-  const stripePromise = loadStripe("pk_test_51LfUTfIa0haEjpKkeUxoahMkMAqKcrQH3EjS68LmVG5v59RSbTWS1oMmlpMz7Gw3sX8W5BplsGqwKKl6PoV4QWlv00fbwMFpMT");
+  // const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+
+  const [stripePromise, setStripePromise] = useState(() => loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY));
   
   const [paymentIntent, setPaymentIntent] = useState({clientSecret:null,id:null});
 
+  const [savePaymentMethod, setSavePaymentMethod] = useState(false);
+
+  const [showCardInfo, setShowCardInfo] = useState(false);
+
   useEffect(() => {
     // signUpWithEmailAndPassword()
-    console.log("PaymentModal")
-    getClientSecret()
+    console.log("PaymentModal ", process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getClientSecret = () => {
     let payload = {};
     payload.products = props.orderList;
+    payload.savePaymentMethodForFutureUse = savePaymentMethod;
+    payload.paymentIntentId = paymentIntent.id;
 
     PaymentApi.getPaymentIntent(payload)
     .then((response) => {
       console.log("response: ", response);
       setPaymentIntent(response.data)
+
+      Storage.setJson("paymentIntent",response.data)
+
+      setShowCardInfo(true)
     })
     .catch((error)=>{
         console.log("error: ", error);
+
+        setShowCardInfo(false)
     });
   }
 
@@ -45,10 +60,55 @@ function PaymentModal(props) {
     appearance,
   };
 
+  const handleSavePaymentMethod = (event) => {
+    console.log("handleSavePaymentMethod")
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    if(name==="saveForFutureUse" && value=="yes"){
+      setSavePaymentMethod(true);
+    }else{
+      setSavePaymentMethod(false);
+    }
+
+    getClientSecret();
+  }
+
+  const onShow = () => {
+    console.log("onShow")
+
+    let savedPaymentIntent = Storage.getJson("paymentIntent");
+
+    if(Object.keys(savedPaymentIntent).length !== 0){
+      setPaymentIntent(savedPaymentIntent)
+    }
+
+    getClientSecret()
+
+  }
+
+  function showCheckout(){
+
+    if(paymentIntent.clientSecret && showCardInfo){
+      console.log("show form");
+      return (
+        <Elements options={options} stripe={stripePromise}>
+          <CheckoutForm changeSavePaymentMethod={handleSavePaymentMethod} />
+        </Elements>
+      );
+    }else{
+      console.log("show no form");
+      return (<div></div>);
+    }
+    
+  }
+
   return (
     <>
       <Modal
         show={props.show}
+        onEntered={()=>onShow()}
         onHide={() => props.close()}
         dialogClassName="modal-90w"
         aria-labelledby="example-custom-modal-styling-title"
@@ -63,18 +123,9 @@ function PaymentModal(props) {
                 <div className="col-12 col-md-12">
                   <div className="row mb-4">
                       <div className="col-12 col-md-12">
-                        {paymentIntent.clientSecret && (
-                          <Elements options={options} stripe={stripePromise}>
-                            <CheckoutForm />
-                          </Elements>
-                        )}
+                        {showCheckout()}
                       </div>
                   </div>
-                  {/* <div className="row">
-                      <div className="col-12 col-md-12 d-grid gap-2 text-end">
-                          <button type="button" className="btn btn-outline-primary" onClick={()=>props.confirm('confirm')}>Pay</button>
-                      </div>
-                  </div> */}
                 </div>
             </div>
             
@@ -86,7 +137,7 @@ function PaymentModal(props) {
 
 export default PaymentModal;
 
-function CheckoutForm() {
+function CheckoutForm(props) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -139,7 +190,7 @@ function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3007/cart?payment=success",
+        return_url: process.env.REACT_APP_URL+"/cart?payment=success",
       },
     });
 
@@ -161,6 +212,21 @@ function CheckoutForm() {
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" />
       
+      <div className="row mb-2">
+          <div className="col-12 col-md-12">
+            <div className="form-check">
+              <input className="form-check-input" 
+              type="checkbox" 
+              value="yes" 
+              name="saveForFutureUse"
+              onChange={props.changeSavePaymentMethod}
+              />
+              <label className="form-check-label">
+                Save for future use
+              </label>
+            </div>
+          </div>
+      </div>
       <div className="row">
           <div className="col-12 col-md-12 d-grid gap-2 text-end">
               <button className='payment-btn btn btn-outline-primary' disabled={isLoading || !stripe || !elements} id="submit">
