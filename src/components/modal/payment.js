@@ -15,7 +15,7 @@ function PaymentModal(props) {
 
   // const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
-  const [stripePromise, setStripePromise] = useState(() => loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY));
+  const [stripePromise, setStripePromise] = useState("");
   
   const [paymentIntent, setPaymentIntent] = useState({clientSecret:null,id:null});
 
@@ -26,6 +26,8 @@ function PaymentModal(props) {
   useEffect(() => {
     // signUpWithEmailAndPassword()
     console.log("PaymentModal ", process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY)
+
+    setStripePromise(() => loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -66,7 +68,7 @@ function PaymentModal(props) {
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
-    if(name==="saveForFutureUse" && value=="yes"){
+    if(name==="saveForFutureUse" && value==="yes"){
       setSavePaymentMethod(true);
     }else{
       setSavePaymentMethod(false);
