@@ -16,7 +16,7 @@ import cookiesDes from '../images/menu/desserts/cookies.jpeg';
 import browniesDes from '../images/menu/desserts/brownies.jpeg';
 import churrosDes from '../images/menu/desserts/churros.jpeg';
 import iceCreamDes from '../images/menu/desserts/ice-cream.jpeg';
-import { set, add, remove } from "../store/cart"
+import { set } from "../store/cart"
 import OrderApi from "../api/OrderApi";
 
 import Auth from "../components/auth/auth";
@@ -25,6 +25,8 @@ function Menu(props) {
 
   const lineItems = useSelector((state) => state.cart.lineItems)
   const orderUuid = useSelector((state) => state.cart.uuid)
+  const lineItemTally = useSelector((state) => state.cart.lineItemTally)
+  
 
   const dispatch = useDispatch()
 
@@ -127,6 +129,8 @@ function Menu(props) {
       return obj.product.uuid===product.uuid
     });
 
+    console.log("index, ", index)
+
     let lineItem = {product: product, count: 0}
 
     if(index===-1){
@@ -139,7 +143,7 @@ function Menu(props) {
 
     let type = ""
 
-    if(lineItem.count==0){
+    if(lineItem.count===0){
       // remove from order
       type = "REMOVE"
     }else{
@@ -171,7 +175,6 @@ function Menu(props) {
     // dispatch(remove(product))
 
   }
-
 
   return (
     <>
@@ -230,7 +233,8 @@ function Menu(props) {
                                 {/* style={{border: `solid 1px red`}} */}
                                   <button onClick={()=>addProductToCart(product)} type="button" className="btn btn-light btn-sm"><i className="fa fa-plus"></i></button>
 
-                                  <OrderProductCount lineItems={lineItems} product={product} />
+                                  {/* <OrderProductCount lineItems={lineItems} product={product} /> */}
+                                  <span className="orderCount">{lineItemTally[product.uuid] ?? 0}</span>
                                      
                                   <button onClick={()=>removeProductFromCart(product)} type="button" className="btn btn-light btn-sm"><i className="fa fa-minus"></i></button>
                                 </div>
@@ -251,33 +255,6 @@ function Menu(props) {
 }
 
 export default Menu;
-
-const OrderProductCount  = (props) => {
-
-
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let lineItems = props.lineItems.filter((item)=>{
-      return props.product.uuid===item.product.uuid;
-    })
-
-    if(lineItems.length!==0){
-      let lineItem = lineItems[0];
-      setCount(lineItem.count)
-    }
-
-    console.log("set count")
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <>
-      <span className="orderCount">{count}</span>
-    </>
-  )
-}
 
 const menuList = [
   {

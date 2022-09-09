@@ -5,12 +5,14 @@ import OrderApi from '../api/OrderApi';
 
 const storeName = "cart"
 
+// backend call
 var cart = Storage.getJson(storeName)
 
 let lineItems = cart['lineItems'] ? cart['lineItems'] : []
 let totalItemCount = cart['totalItemCount'] ? cart['totalItemCount'] : 0
 let uuid = cart['uuid'] ? cart['uuid'] : null
 let total = cart['total'] ? cart['total'] : 0
+let lineItemTally = cart['lineItemTally'] ? cart['lineItemTally'] : {}
 
 export const cartSlice = createSlice({
   name: storeName,
@@ -18,7 +20,8 @@ export const cartSlice = createSlice({
     uuid: uuid,
     lineItems: lineItems,
     totalItemCount: totalItemCount,
-    total: total
+    total: total,
+    lineItemTally: lineItemTally
   },
   reducers: {
     set: (state, action) => {
@@ -28,6 +31,12 @@ export const cartSlice = createSlice({
         cart['uuid'] = state.uuid = order.uuid;
         cart['totalItemCount'] = state.totalItemCount = order.totalItemCount;
         cart['total'] = state.total = order.total;
+
+        state.lineItemTally = {}
+
+        order.lineItems.forEach((li)=>{
+            state.lineItemTally[li.product.uuid] = li.count;
+        });
 
         Storage.setJson(storeName, order);
 
