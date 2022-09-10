@@ -241,7 +241,7 @@ function Cart(props) {
           </div>
         </div>
       <ConfirmationModal show={showDeleteModal} confirm={confirmDeleteAll} question={`Are you sure you want to remove all items from your cart?`} close={()=>confirmDeleteAll(false)}/>
-      <PaymentModal show={showPaymentModal} confirm={confirmOrder} close={()=>setShowPaymentModal(false)} orderList={lineItems} orderCount={lineItemTally} />
+      <PaymentModal orderUuid={orderUuid} show={showPaymentModal} confirm={confirmOrder} close={()=>setShowPaymentModal(false)} orderList={lineItems} orderCount={lineItemTally} />
       <Footer />
     </>
   );

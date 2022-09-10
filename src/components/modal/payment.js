@@ -17,7 +17,7 @@ function PaymentModal(props) {
 
   const [stripePromise, setStripePromise] = useState("");
   
-  const [paymentIntent, setPaymentIntent] = useState({clientSecret:null,id:null});
+  const [paymentIntent, setPaymentIntent] = useState({clientSecret:null,id:null,serviceFee:0,stripeFee:0,orderCost:0,deliveryFee:0,taxFee:0,total:0});
 
   const [savePaymentMethod, setSavePaymentMethod] = useState(false);
 
@@ -34,13 +34,13 @@ function PaymentModal(props) {
 
   const getClientSecret = () => {
     let payload = {};
-    payload.products = props.orderList;
-    payload.savePaymentMethodForFutureUse = savePaymentMethod;
+    payload.orderUuid = props.orderUuid;
+    payload.savePaymentMethod = savePaymentMethod;
     payload.paymentIntentId = paymentIntent.id;
 
-    PaymentApi.getPaymentIntent(payload)
+    PaymentApi.generatePaymentIntent(payload)
     .then((response) => {
-      console.log("response: ", response);
+      console.log("response.data: ", response.data);
       setPaymentIntent(response.data)
 
       Storage.setJson("paymentIntent",response.data)
@@ -123,6 +123,37 @@ function PaymentModal(props) {
         <Modal.Body>
             <div className="row">
                 <div className="col-12 col-md-12">
+                  <div className="row">
+                      <div className="col-12 col-md-12">
+                        <strong>Order Summary</strong>
+                      </div>
+                  </div>
+                  <div className="row">
+                      <div className="col-12 col-md-12">
+                        Items: ${paymentIntent.orderCost.toFixed(2)}
+                      </div>
+                  </div>
+                  <div className="row">
+                      <div className="col-12 col-md-12">
+                        Service Fee: ${paymentIntent.serviceFee.toFixed(2)}
+                      </div>
+                  </div>
+                  <div className="row">
+                      <div className="col-12 col-md-12">
+                        Delivery Fee: ${paymentIntent.deliveryFee.toFixed(2)}
+                      </div>
+                  </div>
+                  <div className="row">
+                      <div className="col-12 col-md-12">
+                        Tax: ${paymentIntent.taxFee.toFixed(2)}
+                      </div>
+                  </div>
+                  <div className="row mb-4">
+                      <div className="col-12 col-md-12">
+                        <strong>Order Total:</strong> ${paymentIntent.total.toFixed(2)}
+                      </div>
+                  </div>
+                
                   <div className="row mb-4">
                       <div className="col-12 col-md-12">
                         {showCheckout()}
