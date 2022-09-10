@@ -32,6 +32,29 @@ const OrderApi = {
 
         return instance.post(url, JSON.stringify(order), options);
     },
+    removeItem: (order) => {
+
+        let auth = Auth.getAuth()
+
+        let headers = {
+            'Content-Type': 'application/json'
+        }
+
+        let url = '/orders/guest/current/remove-item';
+
+        if(auth==null){
+            headers['x-api-key'] = xApiKey
+        }else{
+            headers['token'] = auth.token
+            url = '/orders/current/remove-item';
+        }
+
+        const options = {
+            headers: headers
+        };
+
+        return instance.put(url, JSON.stringify(order), options);
+    },
     getOrder: (uuid) => {
 
         let auth = Auth.getAuth()

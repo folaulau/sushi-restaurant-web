@@ -112,7 +112,7 @@ function Menu(props) {
 
     })
     .catch((error)=>{
-        console.log("error, ", error)
+        console.log("error, ", error.data)
     });
     
     
@@ -138,6 +138,12 @@ function Menu(props) {
       return;
     }else{
       lineItem = Object.assign({}, newLineItems[index]);
+
+      if(lineItem.count<=0){
+        console.log("nno more element to remove")
+        return;
+      }
+
       lineItem.count = --lineItem.count
     }
 
@@ -170,7 +176,7 @@ function Menu(props) {
 
     })
     .catch((error)=>{
-        console.log("error, ", error)
+      console.log("error, ", error.data)
     });
     // dispatch(remove(product))
 
@@ -348,7 +354,7 @@ const dessertList = [
     desc: "Cookie",
     img: cookiesDes,
     price: 1.50,
-    uuid: "COOKIES"
+    uuid: "COOKIE"
   },
   {
     name: "Churros",
@@ -356,7 +362,7 @@ const dessertList = [
     desc: "Churros",
     img: churrosDes,
     price: 2,
-    uuid: "CHURROS"
+    uuid: "CHURRO"
   },
   {
     name: "Brownies",
@@ -364,7 +370,7 @@ const dessertList = [
     desc: "Brownie",
     img: browniesDes,
     price: 3,
-    uuid: "BROWNIES"
+    uuid: "BROWNIE"
   },
   {
     name: "Ice Cream",

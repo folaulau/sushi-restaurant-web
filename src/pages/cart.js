@@ -3,14 +3,19 @@ import Footer from "../layout/footer";
 import { useState, useEffect} from "react";
 import "./cart.css";
 import { useSelector, useDispatch } from 'react-redux'
-import { changeQuantity , removeAll, remove} from "../store/cart"
 import ConfirmationModal from "../components/modal/confirmation";
 import PaymentModal from "../components/modal/payment";
+import { set } from "../store/cart"
+import Auth from "../components/auth/auth";
+import OrderApi from "../api/OrderApi";
 
 function Cart(props) {
 
-  const cartContent = useSelector((state) => state.cart.content)
-  const cartContentCount = useSelector((state) => state.cart.contentCount)
+  const orderUuid = useSelector((state) => state.cart.uuid)
+  const lineItems = useSelector((state) => state.cart.lineItems)
+  const totalItemCount = useSelector((state) => state.cart.totalItemCount)
+  const total = useSelector((state) => state.cart.total)
+  const lineItemTally = useSelector((state) => state.cart.lineItemTally)
 
   const dispatch = useDispatch()
 
@@ -18,13 +23,48 @@ function Cart(props) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
-    console.log("cartContentCount, ",cartContentCount)
-    console.log("cartContent, ",cartContent)
+    console.log("lineItems, ",lineItems)
+    console.log("lineItemTally, ",lineItemTally)
+
+    if(orderUuid!=null){
+      OrderApi.getOrder(orderUuid)
+      .then((response)=>{
+        let updatedOrder = response.data;
+
+        console.log("order, ", updatedOrder)
+
+        dispatch(set(updatedOrder))
+      })
+      .catch((error)=>{
+          console.log("error, ", error.response.data)
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const removeMenuItemFromCart  = (menuItem) => {
-    dispatch(remove(menuItem))
+  const removeMenuItemFromCart  = (lineItem) => {
+    let auth = Auth.getAuth();
+  
+    let order = {
+      userUuid: auth ? auth.uuid : null ,
+      lineItem: lineItem,
+      uuid: orderUuid
+    }
+
+    console.log("remove order, ", order)
+    
+    OrderApi.removeItem(order)
+    .then((response)=>{
+      console.log("response.data, ", response.data)
+
+        let updatedOrder = response.data;
+
+        dispatch(set(updatedOrder))
+
+    })
+    .catch((error)=>{
+        console.log("error, ", error)
+    });
   }
 
   const changeQty = (e) => {
@@ -32,8 +72,39 @@ function Cart(props) {
     let value = e.target.value;
     console.log("name, ",name)
     console.log("value, ",value)
-    let payload = { uuid: name, count: value}
-    dispatch(changeQuantity(payload))
+
+    const index = lineItems.findIndex((obj,index) => {
+      return obj.product.uuid===name
+    });
+
+    let lineItem = lineItems[index]
+
+    let updatedLineItem = Object.assign({}, lineItem);
+    updatedLineItem.count = value;
+
+    let auth = Auth.getAuth();
+
+    let order = {
+      userUuid: auth ? auth.uuid : null ,
+      uuid: orderUuid,
+      lineItem: updatedLineItem,
+      type: "ADD"
+    }
+
+    console.log("order, ", order)
+    
+    OrderApi.createUpdateOrder(order)
+    .then((response)=>{
+      console.log("response.data, ", response.data)
+
+        let updatedOrder = response.data;
+
+        dispatch(set(updatedOrder))
+
+    })
+    .catch((error)=>{
+        console.log("error, ", error)
+    });
   }
 
   const deleteAll = () => {
@@ -55,7 +126,29 @@ function Cart(props) {
     console.log("confirmDeleteAll, answer, ", answer)
 
     if(answer==='confirm'){
-      dispatch(removeAll())
+
+      let auth = Auth.getAuth();
+  
+      let order = {
+        userUuid: auth ? auth.uuid : null ,
+        uuid: orderUuid,
+        all: true
+      }
+  
+      console.log("remove all order, ", order)
+      
+      OrderApi.removeItem(order)
+      .then((response)=>{
+        console.log("response.data, ", response.data)
+  
+          let updatedOrder = response.data;
+  
+          dispatch(set(updatedOrder))
+  
+      })
+      .catch((error)=>{
+          console.log("error, ", error)
+      });
     }
 
     setShowDeleteModal(false)
@@ -81,7 +174,7 @@ function Cart(props) {
                 <div className="col-12 col-md-9">
                   <div className="row">
                     <div className="col-9 col-md-10">
-                      <button type="button" disabled={(cartContent.length===0)}  className="btn btn-outline-danger btn-sm" onClick={()=>deleteAll()}>delete all</button>
+                      <button type="button" disabled={(totalItemCount===0)}  className="btn btn-outline-danger btn-sm" onClick={()=>deleteAll()}>delete all</button>
                     </div>
                     <div className="col-3 col-md-2">
                       Price
@@ -92,11 +185,11 @@ function Cart(props) {
                       <hr></hr>
                     </div>
                   </div>
-                  {cartContent.map((menuItem) => (
-                  <div key={menuItem.uuid} className="row mb-3">
+                  {lineItems.map((lineItem) => (
+                  <div key={lineItem.product.uuid} className="row mb-3">
                     <div className="col-12 col-md-3">
                       <img
-                        src={menuItem.img}
+                        src={lineItem.product.imageUrl}
                         alt="First slide"
                         className="cartItemImg"
                       />
@@ -105,18 +198,18 @@ function Cart(props) {
                       
                       <div className="row">
                         <div className="col-12 col-md-12">
-                          <span className="itemTitle">{menuItem.name},</span><span className="itemPrice">${menuItem.price}</span>
+                          <span className="itemTitle">{lineItem.product.title},</span><span className="itemPrice">${lineItem.product.price}</span>
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-12 col-md-12">
-                          {menuItem.desc}
+                          {lineItem.product.description}
                         </div>
                       </div>
 
                       <div className="row mt-2">
                         <div className="col-4 col-md-2">
-                          <select className="form-select small-input" name={menuItem.uuid} value={cartContentCount[menuItem.uuid]} onChange={changeQty}>
+                          <select className="form-select small-input" name={lineItem.product.uuid} value={lineItemTally[lineItem.product.uuid]} onChange={changeQty}>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -125,12 +218,12 @@ function Cart(props) {
                           </select>
                         </div>
                         <div className="col-4 col-md-2">
-                          <button type="button"  className="btn btn-outline-danger btn-sm" onClick={()=>removeMenuItemFromCart(menuItem)}>delete</button>
+                          <button type="button"  className="btn btn-outline-danger btn-sm" onClick={()=>removeMenuItemFromCart(lineItem)}>delete</button>
                         </div>
                       </div>
                     </div>
                     <div className="col-12 col-md-3">
-                      <h5 className="text-center"><DisplayPrice price={menuItem.price} count={cartContentCount[menuItem.uuid]}/></h5>
+                      <h5 className="text-center">{`$`+lineItem.total}</h5>
                     </div>
                   </div>
                   ))}
@@ -138,7 +231,7 @@ function Cart(props) {
                 <div className="col-12 col-md-3">
                   <div className="row">
                     <div className="col-12 col-md-12">
-                      <DisplayPaymentTab pay={payOrder} content={cartContent} count={cartContentCount} />
+                      <DisplayPaymentTab pay={payOrder} content={lineItems} total={total} count={lineItemTally} />
                       
                     </div>
                   </div>
@@ -148,15 +241,10 @@ function Cart(props) {
           </div>
         </div>
       <ConfirmationModal show={showDeleteModal} confirm={confirmDeleteAll} question={`Are you sure you want to remove all items from your cart?`} close={()=>confirmDeleteAll(false)}/>
-      <PaymentModal show={showPaymentModal} confirm={confirmOrder} close={()=>setShowPaymentModal(false)} orderList={cartContent} orderCount={cartContentCount} />
+      <PaymentModal show={showPaymentModal} confirm={confirmOrder} close={()=>setShowPaymentModal(false)} orderList={lineItems} orderCount={lineItemTally} />
       <Footer />
     </>
   );
-}
-
-const DisplayPrice  = (props) => {
-  let price = (props.price * props.count).toFixed(2);
-  return "$"+price;
 }
 
 const DisplayPaymentTab  = (props) => {
@@ -180,7 +268,7 @@ const DisplayPaymentTab  = (props) => {
     <>
       <div className="row">
         <div className="col-12 col-md-12">
-          Total ({content.length} items): <span className="totalPrice">${price}</span>
+          Total ({content.length} items): <span className="totalPrice">${props.total}</span>
         </div>
       </div>
       <div className="row mt-3">
