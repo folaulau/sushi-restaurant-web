@@ -10,6 +10,7 @@ import {
 } from "@stripe/react-stripe-js";
 import "./payment.css";
 import Storage from '../../store/storage';
+import Auth from '../auth/auth';
 
 function PaymentModal(props) {
 
@@ -33,7 +34,11 @@ function PaymentModal(props) {
   }, []);
 
   const getClientSecret = () => {
+
+    let auth = Auth.getAuth();
+
     let payload = {};
+    payload.userUuid = auth ? auth.uuid : null;
     payload.orderUuid = props.orderUuid;
     payload.savePaymentMethod = savePaymentMethod;
     payload.paymentIntentId = paymentIntent.id;
