@@ -111,6 +111,14 @@ function PaymentModal(props) {
     
   }
 
+  const changeDelivery = (e) => {
+    let name = e.target.name;
+    let value = e.target.value;
+    console.log("name, ",name)
+    console.log("value, ",value)
+
+  }
+
   return (
     <>
       <Modal
@@ -129,35 +137,64 @@ function PaymentModal(props) {
             <div className="row">
                 <div className="col-12 col-md-12">
                   <div className="row">
-                      <div className="col-12 col-md-12">
+                      <div className="col-12 col-md-7 offset-md-5">
                         <strong>Order Summary</strong>
                       </div>
                   </div>
                   <div className="row">
-                      <div className="col-12 col-md-12">
-                        Items: ${paymentIntent.orderCost.toFixed(2)}
+                      <div className="col-12 col-md-6 text-end">
+                        Items:
+                      </div>
+                      <div className="col-12 col-md-6 text-start">
+                        ${paymentIntent.orderCost.toFixed(2)}
                       </div>
                   </div>
                   <div className="row">
-                      <div className="col-12 col-md-12">
-                        Service Fee: ${paymentIntent.serviceFee.toFixed(2)}
+                      <div className="col-12 col-md-6 text-end">
+                        Service Fee:
+                      </div>
+                      <div className="col-12 col-md-6 text-start">
+                        ${paymentIntent.serviceFee.toFixed(2)}
                       </div>
                   </div>
                   <div className="row">
-                      <div className="col-12 col-md-12">
-                        Delivery Fee: ${paymentIntent.deliveryFee.toFixed(2)}
+                      <div className="col-12 col-md-6 text-end">
+                        Delivery Fee:
+                      </div>
+                      <div className="col-12 col-md-6 text-start">
+                        ${paymentIntent.deliveryFee.toFixed(2)}
                       </div>
                   </div>
                   <div className="row">
-                      <div className="col-12 col-md-12">
-                        Tax: ${paymentIntent.taxFee.toFixed(2)}
+                      <div className="col-12 col-md-6 text-end">
+                        Tax:
+                      </div>
+                      <div className="col-12 col-md-6 text-start">
+                        ${paymentIntent.taxFee.toFixed(2)}
                       </div>
                   </div>
-                  <div className="row mb-4">
-                      <div className="col-12 col-md-12">
-                        <strong>Order Total:</strong> ${paymentIntent.total.toFixed(2)}
+                  <div className="row mb-3">
+                      <div className="col-12 col-md-6 text-end">
+                        <strong>Order Total:</strong>
+                      </div>
+                      <div className="col-12 col-md-6 text-start">
+                      ${paymentIntent.total.toFixed(2)}
                       </div>
                   </div>
+                  <div className="row mb-3">
+                      <div className="col-12 col-md-6 text-end">
+                      Delivery Method:
+                      </div>
+                      <div className="col-12 col-md-6 text-start">
+                        <select className="form-select small-input" name="deliveryMethod" value='PICK_UP' onChange={changeDelivery}>
+                          <option value="PICK_UP">Pick Up</option>
+                          <option value="DROP_OFF">Drop Off</option>
+                        </select>
+                      </div>
+                  </div>
+           
+
+                  
                 
                   <div className="row mb-4">
                       <div className="col-12 col-md-12">
