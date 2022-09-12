@@ -117,17 +117,16 @@ export const cartSlice = createSlice({
         Storage.setJson(storeName, cart);
     },
     removeAll: (state, action) => {
-        state.content = [];
-        state.contentCount = {};
-        state.totalCount = 0;
+        cart['lineItems'] = state.lineItems = []
+        cart['uuid'] = state.uuid = null;
+        cart['totalItemCount'] = state.totalItemCount = 0;
+        cart['total'] = state.total = 0;
+        cart['lineItemTally'] = state.lineItemTally = {};
 
-        state.totalCount = 0;
+        Storage.setJson(storeName, {});
+        Storage.setJson("paymentIntent", {});
 
-        cart['content'] = state.content
-        cart['count'] = state.contentCount
-        cart['totalCount'] = state.totalCount
-
-        Storage.setJson(storeName, cart);
+        console.log("remove all")
     },
     changeQuantity: (state, action) => {
         let payload = action.payload;

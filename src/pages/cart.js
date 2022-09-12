@@ -1,15 +1,19 @@
 import Header from "../layout/header";
 import Footer from "../layout/footer";
 import { useState, useEffect} from "react";
+import { Link } from "react-router-dom";
 import "./cart.css";
 import { useSelector, useDispatch } from 'react-redux'
 import ConfirmationModal from "../components/modal/confirmation";
-import PaymentModal from "../components/modal/payment";
-import { set } from "../store/cart"
+import { set, removeAll } from "../store/cart"
 import Auth from "../components/auth/auth";
 import OrderApi from "../api/OrderApi";
 
 function Cart(props) {
+
+  const paymentStatus = new URLSearchParams(window.location.search).get(
+    "payment"
+  );
 
   const orderUuid = useSelector((state) => state.cart.uuid)
   const lineItems = useSelector((state) => state.cart.lineItems)
@@ -20,25 +24,34 @@ function Cart(props) {
   const dispatch = useDispatch()
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
     console.log("lineItems, ",lineItems)
     console.log("lineItemTally, ",lineItemTally)
+    console.log("paymentStatus, ",paymentStatus)
 
-    if(orderUuid!=null){
-      OrderApi.getOrder(orderUuid)
-      .then((response)=>{
-        let updatedOrder = response.data;
+    if(paymentStatus==="success"){
 
-        console.log("order, ", updatedOrder)
+      // call api to confirm payment
 
-        dispatch(set(updatedOrder))
-      })
-      .catch((error)=>{
-          console.log("error, ", error.response.data)
-      });
+      // remove order from local storage
+      dispatch(removeAll())
+    }else{
+      if(orderUuid!=null){
+        OrderApi.getOrder(orderUuid)
+        .then((response)=>{
+          let updatedOrder = response.data;
+  
+          console.log("order, ", updatedOrder)
+  
+          dispatch(set(updatedOrder))
+        })
+        .catch((error)=>{
+            console.log("error, ", error.response.data)
+        });
+      }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -110,16 +123,6 @@ function Cart(props) {
   const deleteAll = () => {
     console.log("deleteAll")
     setShowDeleteModal(true)
-  }
-
-  const payOrder = () => {
-    console.log("payOrder")
-
-    setShowPaymentModal(true)
-  }
-
-  const confirmOrder = (message) => {
-    console.log("confirmOrder")
   }
 
   const confirmDeleteAll = (answer) => {
@@ -231,7 +234,7 @@ function Cart(props) {
                 <div className="col-12 col-md-3">
                   <div className="row">
                     <div className="col-12 col-md-12">
-                      <DisplayPaymentTab pay={payOrder} content={lineItems} total={total} count={lineItemTally} />
+                      <DisplayPaymentTab content={lineItems} total={total} count={lineItemTally} />
                       
                     </div>
                   </div>
@@ -241,7 +244,6 @@ function Cart(props) {
           </div>
         </div>
       <ConfirmationModal show={showDeleteModal} confirm={confirmDeleteAll} question={`Are you sure you want to remove all items from your cart?`} close={()=>confirmDeleteAll(false)}/>
-      <PaymentModal orderUuid={orderUuid} show={showPaymentModal} confirm={confirmOrder} close={()=>setShowPaymentModal(false)} orderList={lineItems} orderCount={lineItemTally} />
       <Footer />
     </>
   );
@@ -274,7 +276,10 @@ const DisplayPaymentTab  = (props) => {
       <div className="row mt-3">
         <div className="col-12 col-md-12">
           <div className="d-grid gap-2">
-            <button className="btn btn-primary" onClick={()=>props.pay()} disabled={btnDisabled} type="button">Pay</button>
+            <Link to="/payment" className="btn btn-primary" disabled={btnDisabled}>
+            Pay
+            </Link>
+            {/* <button className="btn btn-primary" onClick={()=>props.pay()} disabled={btnDisabled} type="button">Pay</button> */}
           </div>
         </div>
       </div>
