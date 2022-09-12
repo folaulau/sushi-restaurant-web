@@ -21,7 +21,7 @@ function PaymentModal(props) {
   const [paymentIntent, setPaymentIntent] = useState({clientSecret:null,id:null,serviceFee:0,stripeFee:0,orderCost:0,deliveryFee:0,taxFee:0,total:0});
 
   const [savePaymentMethod, setSavePaymentMethod] = useState(false);
-  const [deliveryMethod, setDeliveryMethod] = useState("PICK_UP");
+  const [delivery, setDelivery] = useState({method:"PICK_UP",address:{uuid:"",street:"",street2:"",city:"",zipcode:"",state:"",longitude:0,latitude:0}});
 
   const [showCardInfo, setShowCardInfo] = useState(false);
 
@@ -43,7 +43,10 @@ function PaymentModal(props) {
     payload.orderUuid = props.orderUuid;
     payload.savePaymentMethod = savePaymentMethod;
     payload.paymentIntentId = paymentIntent.id;
-    payload.deliveryMethod = deliveryMethod;
+    payload.deliveryMethod = delivery.method;
+    payload.deliveryAddress = delivery.address;
+
+    console.log("payload: ", payload)
 
     PaymentApi.generatePaymentIntent(payload)
     .then((response) => {
@@ -119,8 +122,11 @@ function PaymentModal(props) {
     console.log("name, ",name)
     console.log("value, ",value)
 
-
-    setDeliveryMethod(value);
+    let updatedValue = {method:value};
+    setDelivery(delivery => ({
+      ...delivery,
+      ...updatedValue
+    }));
 
     getClientSecret();
 
@@ -193,20 +199,20 @@ function PaymentModal(props) {
                       Delivery Method:
                       </div>
                       <div className="col-12 col-md-6 text-start">
-                        <select className="form-select" name="deliveryMethod" value={deliveryMethod} onChange={changeDelivery}>
+                        <select className="form-select" name="method" value={delivery.method} onChange={changeDelivery}>
                           <option value="PICK_UP">Pick Up</option>
                           <option value="DROP_OFF">Drop Off</option>
                         </select>
                       </div>
                   </div>
-                  { deliveryMethod =="DROP_OFF" && 
+                  { (delivery.method === "DROP_OFF") && 
                     <div className="row mb-3">
                       <div className="col-12 col-md-6 text-end">
                       Address:
                       </div>
                       <div className="col-12 col-md-6 text-start">
                       
-                        <div class="mb-3">
+                        <div className="mb-3">
                           <input type="email" className="form-control"/>
                         </div>
                       </div>
