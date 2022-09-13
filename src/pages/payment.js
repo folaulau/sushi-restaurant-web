@@ -211,6 +211,7 @@ function Payment() {
                     <div className="col-12 col-md-6 text-start">
                     
                       <div className="mb-3">
+                        {/* https://console.cloud.google.com/google/maps-apis/overview?project=fit-force-362420 */}
                       <Autocomplete
                         type="deliveryAddress"
                         name="name"
@@ -218,7 +219,7 @@ function Payment() {
                         defaultValue={addressAsLine}
                         ref={addressUuidInput}
                         className="form-control"
-                        apiKey="AIzaSyCWPe0Y1xqKVM4mMNqMxNYwSsmB5dsg-lk"
+                        apiKey="AIzaSyD1KPd02JBlblQ9l1HMZAge0300AtbvghY"
                         onPlaceSelected={(place, inputRef, autocomplete) =>
                           updateAddress(place)
                         }

@@ -37,6 +37,8 @@ function Header() {
               
               <Link to="/reservation" className="me-3 py-2 text-dark text-decoration-none">Reservation</Link>
 
+              <Link to="/account" className="me-3 py-2 text-dark text-decoration-none">Account</Link>
+
               <CartIcon />
 
             </nav>
