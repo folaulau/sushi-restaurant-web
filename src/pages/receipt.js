@@ -32,7 +32,7 @@ function Receipt(props) {
     console.log("lineItemTally, ",lineItemTally)
     console.log("paymentStatus, ",paymentStatus)
 
-    if(paymentStatus==="success"){
+    if(paymentStatus==="success" && order.status==="ORDERING"){
 
       let payment = {
         paymentIntentId: paymentIntentId,
@@ -59,7 +59,7 @@ function Receipt(props) {
 
   useEffect(() => {
     setInterval(() => {
-      OrderApi.getOrder(order.uuid)
+      OrderApi.getOrder(orderUuid)
       .then((response)=>{
         let updatedOrder = response.data;
 
@@ -219,6 +219,8 @@ const OrderStatus  = (props) => {
 
       }
 
+      <hr></hr>
+
       { (props.order.status==="ORDER_PLACED" || props.order.status==="PREPARING_ORDER") &&
         <div className="row">
           <div className="col-12 col-md-12">
@@ -243,10 +245,34 @@ const OrderStatus  = (props) => {
       { (props.order.status==="DELIVERED") &&
         <div className="row">
           <div className="col-12 col-md-12">
-            Your order has been dropped off.
+            <div className="row">
+              <div className="col-12 col-md-12">
+                Your order has been dropped off.
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-12 col-md-12">
+                Thank you for doing busines with us!
+              </div>
+            </div>
           </div>
         </div>
-      }
+      }{ (props.order.status==="PICKED_UP") &&
+      <div className="row">
+        <div className="col-12 col-md-12">
+          <div className="row">
+            <div className="col-12 col-md-12">
+              Your order has been picked up.
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-12 col-md-12">
+              Thank you for doing busines with us!
+            </div>
+          </div>
+        </div>
+      </div>
+    }
     </>
   )
 }
