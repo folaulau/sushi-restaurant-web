@@ -1,11 +1,9 @@
 import Header from "../layout/header";
 import Footer from "../layout/footer";
-import { useState, useEffect} from "react";
-import { Link } from "react-router-dom";
+import { useEffect} from "react";
 import "./receipt.css";
 import { useSelector, useDispatch } from 'react-redux'
-import { set, removeAll } from "../store/cart"
-import Auth from "../components/auth/auth";
+import { set } from "../store/cart"
 import OrderApi from "../api/OrderApi";
 
 function Receipt(props) {
@@ -72,7 +70,7 @@ function Receipt(props) {
       });
 
     }, 1000 * 30);
-  }, []);
+  }, [orderUuid, dispatch]);
 
   
 

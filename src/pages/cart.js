@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import "./cart.css";
 import { useSelector, useDispatch } from 'react-redux'
 import ConfirmationModal from "../components/modal/confirmation";
-import { set, removeAll } from "../store/cart"
+import { set } from "../store/cart"
 import Auth from "../components/auth/auth";
 import OrderApi from "../api/OrderApi";
 
@@ -43,13 +43,13 @@ function Cart(props) {
 
   const removeMenuItemFromCart  = (lineItem) => {
 
-    let order = {
+    let updatedOrder = {
       userUuid: auth ? auth.uuid : null ,
       lineItem: lineItem,
       uuid: order.uuid
     }
     
-    OrderApi.removeItem(order)
+    OrderApi.removeItem(updatedOrder)
     .then((response)=>{
       console.log("response.data, ", response.data)
 
@@ -231,22 +231,7 @@ function Cart(props) {
 }
 
 const DisplayPaymentTab  = (props) => {
-  let content = props.content;
-  let count = props.count;
-  let price = 0;
 
-  for(let i=0;i<props.order.lineItems.length;i++){
-    let lineItem = props.order.lineItems[i];
-    price += (lineItem.price * count[lineItem.uuid]);
-  }
-
-  let btnDisabled = true;
-
-  if(price!==0){
-    btnDisabled = false;
-  }
-
-  price = price.toFixed(2)
   return (
     <>
       <div className="row">
@@ -257,7 +242,7 @@ const DisplayPaymentTab  = (props) => {
       <div className="row mt-3">
         <div className="col-12 col-md-12">
           <div className="d-grid gap-2">
-            <Link to="/payment" className="btn btn-primary" disabled={btnDisabled}>
+            <Link to="/payment" className="btn btn-primary" disabled={(props.order.lineItemsTotal===0)}>
             Pay
             </Link>
             {/* <button className="btn btn-primary" onClick={()=>props.pay()} disabled={btnDisabled} type="button">Pay</button> */}

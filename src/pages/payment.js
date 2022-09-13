@@ -24,9 +24,9 @@ function Payment() {
   
   const [paymentIntent, setPaymentIntent] = useState({clientSecret:null,id:null,serviceFee:0,stripeFee:0,lineItemsTotal:0,deliveryFee:0,taxFee:0,total:0});
   
-  const [addressAsLine, setAddressAsLine] = useState("");
+  const [addressAsLine] = useState("");
 
-  const [auth, setAuth] = useState({uuid:null});
+  const [auth] = useState(Auth.getAuth());
   
   const addressUuidInput = useRef(null);
 
@@ -41,8 +41,6 @@ function Payment() {
     setStripePromise(() => loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY))
 
     addressUuidInput.current = "";
-
-    setAuth(Auth.getAuth())
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -76,7 +74,7 @@ function Payment() {
       setShowCardInfo(true)
     })
     .catch((error)=>{
-        console.log("error: ", error);
+        console.log("error: ", error.response.data);
 
         setShowCardInfo(false)
     });
@@ -134,9 +132,10 @@ function Payment() {
       longitude: place.geometry.location.lng(),
     };
 
+    let deliveryAddress = 'deliveryAddress'
     setPayment({
       ...payment,
-      ['deliveryAddress']: newAddress
+      [deliveryAddress]: newAddress
     })
 
     console.log("updated address: ", newAddress);
