@@ -13,20 +13,24 @@ import {
 import "./payment.css";
 import Storage from '../store/storage';
 import Auth from '../components/auth/auth';
-
+import { useSelector } from 'react-redux'
 function Payment() {
 
   // const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
+  const order = useSelector((state) => state.cart.order)
+
   const [stripePromise, setStripePromise] = useState("");
   
-  const [paymentIntent, setPaymentIntent] = useState({clientSecret:null,id:null,serviceFee:0,stripeFee:0,orderCost:0,deliveryFee:0,taxFee:0,total:0});
+  const [paymentIntent, setPaymentIntent] = useState({clientSecret:null,id:null,serviceFee:0,stripeFee:0,lineItemsTotal:0,deliveryFee:0,taxFee:0,total:0});
   
   const [addressAsLine, setAddressAsLine] = useState("");
+
+  const [auth, setAuth] = useState({uuid:null});
   
   const addressUuidInput = useRef(null);
 
-  const [payment, setPayment] = useState({ savePaymentMethod: false, deliveryMethod:"PICK_UP",deliveryAddress:{uuid:"",street:"",street2:"",city:"",zipcode:"",state:"",longitude:0,latitude:0}});
+  const [payment, setPayment] = useState({ savePaymentMethod: false, deliveryMethod:"PICK_UP",deliveryAddress:{uuid:"",street:"",street2:"",city:"",zipcode:"",state:"",longitude:null,latitude:null}});
 
   const [showCardInfo, setShowCardInfo] = useState(false);
 
@@ -38,6 +42,8 @@ function Payment() {
 
     addressUuidInput.current = "";
 
+    setAuth(Auth.getAuth())
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -46,16 +52,13 @@ function Payment() {
     getClientSecret()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payment]);
+  }, [payment.savePaymentMethod,payment.deliveryAddress]);
 
   const getClientSecret = () => {
 
-    let auth = Auth.getAuth();
-    let cart = Storage.getJson("cart");
-
     let payload = {};
     payload.userUuid = auth ? auth.uuid : null;
-    payload.orderUuid = cart.uuid;
+    payload.orderUuid = order.uuid;
     payload.savePaymentMethod = payment.savePaymentMethod;
     payload.paymentIntentId = paymentIntent.id;
     payload.deliveryMethod = payment.deliveryMethod;
@@ -108,7 +111,7 @@ function Payment() {
       console.log("show form");
       return (
         <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm changeSavePaymentMethod={handlePaymentChange} />
+          <CheckoutForm orderUuid={order.uuid} auth={auth} changeSavePaymentMethod={handlePaymentChange} />
         </Elements>
       );
     }else{
@@ -155,7 +158,7 @@ function Payment() {
                       Items:
                     </div>
                     <div className="col-12 col-md-6 text-start">
-                      ${paymentIntent.orderCost.toFixed(2)}
+                      ${paymentIntent.lineItemsTotal.toFixed(2)}
                     </div>
                 </div>
                 <div className="row">
@@ -163,7 +166,7 @@ function Payment() {
                       Service Fee:
                     </div>
                     <div className="col-12 col-md-6 text-start">
-                      ${paymentIntent.serviceFee.toFixed(2)}
+                      ${(paymentIntent.stripeFee+paymentIntent.serviceFee).toFixed(2)}
                     </div>
                 </div>
                 <div className="row">
@@ -301,7 +304,7 @@ function CheckoutForm(props) {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: process.env.REACT_APP_URL+"/cart?payment=success",
+        return_url: process.env.REACT_APP_URL+"/receipt?payment=success&orderUuid="+props.orderUuid,
       },
     });
 
@@ -324,21 +327,23 @@ function CheckoutForm(props) {
 
       <PaymentElement id="payment-element" />
       
-      <div className="row mb-2">
-          <div className="col-12 col-md-12">
-            <div className="form-check">
-              <input className="form-check-input" 
-              type="checkbox" 
-              value="yes" 
-              name="savePaymentMethod"
-              onChange={props.changeSavePaymentMethod}
-              />
-              <label className="form-check-label">
-                Save for future use
-              </label>
+      {props.auth && 
+        <div className="row mb-2">
+            <div className="col-12 col-md-12">
+              <div className="form-check">
+                <input className="form-check-input" 
+                type="checkbox" 
+                value="yes" 
+                name="savePaymentMethod"
+                onChange={props.changeSavePaymentMethod}
+                />
+                <label className="form-check-label">
+                  Save for future use
+                </label>
+              </div>
             </div>
-          </div>
-      </div>
+        </div>
+      }
       <div className="row">
           <div className="col-12 col-md-12 d-grid gap-2 text-end">
               <button className='payment-btn btn btn-outline-primary' disabled={isLoading || !stripe || !elements} id="submit">

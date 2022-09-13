@@ -79,7 +79,30 @@ const OrderApi = {
         };
 
         return instance.get(url, options);
-    }
+    },
+    confirmPayment: (order) => {
+
+        let auth = Auth.getAuth()
+
+        let headers = {
+            'Content-Type': 'application/json'
+        }
+
+        let url = '/orders/guest/confirm-payment';
+
+        if(auth==null){
+            headers['x-api-key'] = xApiKey
+        }else{
+            headers['token'] = auth.token
+            url = '/orders/guest/confirm-payment';
+        }
+
+        const options = {
+            headers: headers
+        };
+
+        return instance.put(url, JSON.stringify(order), options);
+    },
 }
 
 export default OrderApi;

@@ -23,8 +23,7 @@ import Auth from "../components/auth/auth";
 
 function Menu(props) {
 
-  const lineItems = useSelector((state) => state.cart.lineItems)
-  const orderUuid = useSelector((state) => state.cart.uuid)
+  const order = useSelector((state) => state.cart.order)
   const lineItemTally = useSelector((state) => state.cart.lineItemTally)
   
 
@@ -35,13 +34,12 @@ function Menu(props) {
 
   useEffect(() => {
     setDisplayList(sushiList)
-    console.log("lineItems, ", lineItems)
-    console.log("orderUuid, ", orderUuid)
+    console.log("order, ", order)
 
     setAuth(Auth.getAuth())
 
-    if(orderUuid!=null){
-      OrderApi.getOrder(orderUuid)
+    if(order.uuid!=null){
+      OrderApi.getOrder(order.uuid)
       .then((response)=>{
         let updatedOrder = response.data;
 
@@ -76,9 +74,7 @@ function Menu(props) {
 
   const addProductToCart = (product) => {
 
-    console.log("lineItems, ", lineItems)
-
-    let newLineItems = lineItems.map((i)=>i)
+    let newLineItems = order.lineItems.map((i)=>i)
 
     const index = newLineItems.findIndex((obj,index) => {
       return obj.product.uuid===product.uuid
@@ -93,37 +89,20 @@ function Menu(props) {
         lineItem.count = ++lineItem.count
     }
 
-    let order = {
+    let updatedOrder = {
         userUuid: auth ? auth.uuid : null ,
-        uuid: orderUuid,
+        uuid:  order.uuid,
         lineItem: lineItem,
         type: "ADD"
     }
 
-    console.log("order, ", order)
+    updateOrder(updatedOrder)
     
-    OrderApi.createUpdateOrder(order)
-    .then((response)=>{
-      console.log("response.data, ", response.data)
-
-        let updatedOrder = response.data;
-
-        dispatch(set(updatedOrder))
-
-    })
-    .catch((error)=>{
-        console.log("error, ", error.data)
-    });
-    
-    
-
   }
 
   const removeProductFromCart  = (product) => {
 
-    console.log("lineItems, ", lineItems)
-
-    let newLineItems = lineItems.map((i)=>i)
+    let newLineItems =  order.lineItems.map((i)=>i)
 
     const index = newLineItems.findIndex((obj,index) => {
       return obj.product.uuid===product.uuid
@@ -157,16 +136,20 @@ function Menu(props) {
       type = "ADD"
     }
 
-    let order = {
+    let updatedOrder = {
         userUuid: auth ? auth.uuid : null ,
-        uuid: orderUuid,
+        uuid:  order.uuid,
         lineItem: lineItem,
         type: type
     }
 
-    console.log("order, ", order)
-    
-    OrderApi.createUpdateOrder(order)
+    updateOrder(updatedOrder)
+
+  }
+
+  const updateOrder  = (updatedOrder) => {
+    console.log("updatedOrder, ", updatedOrder)
+    OrderApi.createUpdateOrder(updatedOrder)
     .then((response)=>{
         console.log("response.data, ", response.data)
 
@@ -178,8 +161,6 @@ function Menu(props) {
     .catch((error)=>{
       console.log("error, ", error.data)
     });
-    // dispatch(remove(product))
-
   }
 
   return (

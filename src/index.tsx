@@ -14,6 +14,7 @@ import SignUp from "./pages/signup";
 import SignIn from "./pages/signin";
 import Cart from "./pages/cart";
 import Payment from "./pages/payment";
+import Receipt from "./pages/receipt";
 
 console.log("app env: " + process.env.REACT_APP_ENV);
 console.log("api url: " + process.env.REACT_APP_API_URL);
@@ -34,6 +35,7 @@ root.render(
           <Route path="signin" element={<SignIn />} />
           <Route path="cart" element={<Cart />} />
           <Route path="payment" element={<Payment />} />
+          <Route path="receipt" element={<Receipt />} />
         </Routes>
       </BrowserRouter>
     {/* </React.StrictMode> */}

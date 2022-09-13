@@ -11,60 +11,43 @@ import OrderApi from "../api/OrderApi";
 
 function Cart(props) {
 
-  const paymentStatus = new URLSearchParams(window.location.search).get(
-    "payment"
-  );
-
-  const orderUuid = useSelector((state) => state.cart.uuid)
-  const lineItems = useSelector((state) => state.cart.lineItems)
-  const totalItemCount = useSelector((state) => state.cart.totalItemCount)
-  const total = useSelector((state) => state.cart.total)
+  const order = useSelector((state) => state.cart.order)
   const lineItemTally = useSelector((state) => state.cart.lineItemTally)
 
   const dispatch = useDispatch()
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [auth, setAuth] = useState({});
 
   useEffect(() => {
-    console.log("lineItems, ",lineItems)
-    console.log("lineItemTally, ",lineItemTally)
-    console.log("paymentStatus, ",paymentStatus)
+    console.log("order, ",order)
 
-    if(paymentStatus==="success"){
+    if(order.uuid!=null){
+      OrderApi.getOrder(order.uuid)
+      .then((response)=>{
+        let updatedOrder = response.data;
 
-      // call api to confirm payment
+        console.log("order, ", updatedOrder)
 
-      // remove order from local storage
-      dispatch(removeAll())
-    }else{
-      if(orderUuid!=null){
-        OrderApi.getOrder(orderUuid)
-        .then((response)=>{
-          let updatedOrder = response.data;
-  
-          console.log("order, ", updatedOrder)
-  
-          dispatch(set(updatedOrder))
-        })
-        .catch((error)=>{
-            console.log("error, ", error.response.data)
-        });
-      }
+        dispatch(set(updatedOrder))
+      })
+      .catch((error)=>{
+          console.log("error, ", error.response.data)
+      });
     }
+
+    setAuth(Auth.getAuth())
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const removeMenuItemFromCart  = (lineItem) => {
-    let auth = Auth.getAuth();
-  
+
     let order = {
       userUuid: auth ? auth.uuid : null ,
       lineItem: lineItem,
-      uuid: orderUuid
+      uuid: order.uuid
     }
-
-    console.log("remove order, ", order)
     
     OrderApi.removeItem(order)
     .then((response)=>{
@@ -86,27 +69,27 @@ function Cart(props) {
     console.log("name, ",name)
     console.log("value, ",value)
 
-    const index = lineItems.findIndex((obj,index) => {
+    const index = order.lineItems.findIndex((obj,index) => {
       return obj.product.uuid===name
     });
 
-    let lineItem = lineItems[index]
+    let lineItem =  order.lineItems[index]
 
     let updatedLineItem = Object.assign({}, lineItem);
     updatedLineItem.count = value;
 
     let auth = Auth.getAuth();
 
-    let order = {
+    let updatedOrder = {
       userUuid: auth ? auth.uuid : null ,
-      uuid: orderUuid,
+      uuid: order.uuid,
       lineItem: updatedLineItem,
       type: "ADD"
     }
 
-    console.log("order, ", order)
+    console.log("updatedOrder, ", updatedOrder)
     
-    OrderApi.createUpdateOrder(order)
+    OrderApi.createUpdateOrder(updatedOrder)
     .then((response)=>{
       console.log("response.data, ", response.data)
 
@@ -129,18 +112,16 @@ function Cart(props) {
     console.log("confirmDeleteAll, answer, ", answer)
 
     if(answer==='confirm'){
-
-      let auth = Auth.getAuth();
   
-      let order = {
+      let updatedOrder = {
         userUuid: auth ? auth.uuid : null ,
-        uuid: orderUuid,
+        uuid: order.uuid,
         all: true
       }
   
-      console.log("remove all order, ", order)
+      console.log("remove all order, ", updatedOrder)
       
-      OrderApi.removeItem(order)
+      OrderApi.removeItem(updatedOrder)
       .then((response)=>{
         console.log("response.data, ", response.data)
   
@@ -177,7 +158,7 @@ function Cart(props) {
                 <div className="col-12 col-md-9">
                   <div className="row">
                     <div className="col-9 col-md-10">
-                      <button type="button" disabled={(totalItemCount===0)}  className="btn btn-outline-danger btn-sm" onClick={()=>deleteAll()}>delete all</button>
+                      <button type="button" disabled={(order.totalItemCount===0)}  className="btn btn-outline-danger btn-sm" onClick={()=>deleteAll()}>delete all</button>
                     </div>
                     <div className="col-3 col-md-2">
                       Price
@@ -188,7 +169,7 @@ function Cart(props) {
                       <hr></hr>
                     </div>
                   </div>
-                  {lineItems.map((lineItem) => (
+                  {order.lineItems.map((lineItem) => (
                   <div key={lineItem.product.uuid} className="row mb-3">
                     <div className="col-12 col-md-3">
                       <img
@@ -226,7 +207,7 @@ function Cart(props) {
                       </div>
                     </div>
                     <div className="col-12 col-md-3">
-                      <h5 className="text-center">{`$`+lineItem.total}</h5>
+                      <h5 className="text-center">{`$`+(lineItem.total).toFixed(2)}</h5>
                     </div>
                   </div>
                   ))}
@@ -234,7 +215,7 @@ function Cart(props) {
                 <div className="col-12 col-md-3">
                   <div className="row">
                     <div className="col-12 col-md-12">
-                      <DisplayPaymentTab content={lineItems} total={total} count={lineItemTally} />
+                      <DisplayPaymentTab order={order} count={lineItemTally} />
                       
                     </div>
                   </div>
@@ -254,9 +235,9 @@ const DisplayPaymentTab  = (props) => {
   let count = props.count;
   let price = 0;
 
-  for(let i=0;i<content.length;i++){
-    let menuItem = content[i];
-    price += (menuItem.price * count[menuItem.uuid]);
+  for(let i=0;i<props.order.lineItems.length;i++){
+    let lineItem = props.order.lineItems[i];
+    price += (lineItem.price * count[lineItem.uuid]);
   }
 
   let btnDisabled = true;
@@ -270,7 +251,7 @@ const DisplayPaymentTab  = (props) => {
     <>
       <div className="row">
         <div className="col-12 col-md-12">
-          Total ({content.length} items): <span className="totalPrice">${props.total}</span>
+          Total ({props.order.totalItemCount} items): <span className="totalPrice">${props.order.lineItemsTotal.toFixed(2)}</span>
         </div>
       </div>
       <div className="row mt-3">
