@@ -15,6 +15,7 @@ import SignIn from "./pages/signin";
 import Cart from "./pages/cart";
 import Payment from "./pages/payment";
 import Receipt from "./pages/receipt";
+import ReservationDetails from "./pages/reservation-details";
 
 console.log("app env: " + process.env.REACT_APP_ENV);
 console.log("api url: " + process.env.REACT_APP_API_URL);
@@ -31,6 +32,7 @@ root.render(
           <Route path="/" element={<Home />} />
           <Route path="menu" element={<Menu />} />
           <Route path="reservation" element={<Reservation />} />
+          <Route path="reservation/details" element={<ReservationDetails />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="signin" element={<SignIn />} />
           <Route path="cart" element={<Cart />} />

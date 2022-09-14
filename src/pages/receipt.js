@@ -1,9 +1,9 @@
 import Header from "../layout/header";
 import Footer from "../layout/footer";
-import { useEffect} from "react";
+import { useEffect, useState} from "react";
 import "./receipt.css";
 import { useSelector, useDispatch } from 'react-redux'
-import { set } from "../store/cart"
+import { removeAll } from "../store/cart"
 import OrderApi from "../api/OrderApi";
 
 function Receipt(props) {
@@ -20,8 +20,13 @@ function Receipt(props) {
     "payment_intent"
   );
 
-  const order = useSelector((state) => state.cart.order)
-  const lineItemTally = useSelector((state) => state.cart.lineItemTally)
+  const cartOrder = useSelector((state) => state.cart.order);
+  
+  console.log("cartOrder, ",cartOrder)
+
+  const [order, setOrder] = useState(cartOrder)
+
+  const [lineItemTally, setLineItemTally] = useState({})
 
   const dispatch = useDispatch()
 
@@ -43,7 +48,10 @@ function Receipt(props) {
 
         console.log("order, ", updatedOrder)
 
-        dispatch(set(updatedOrder))
+        process(updatedOrder)
+
+        dispatch(removeAll())
+        
       })
       .catch((error)=>{
           console.log("error, ", error.response.data)
@@ -54,6 +62,19 @@ function Receipt(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const process = (order) => {
+
+    setOrder(order)
+
+    let lineItemTally = {}
+
+    order.lineItems.forEach((li)=>{
+        lineItemTally[li.product.uuid] = li.count;
+    });
+
+    setLineItemTally(lineItemTally)
+  }
+
 
   useEffect(() => {
     setInterval(() => {
@@ -63,7 +84,7 @@ function Receipt(props) {
 
         console.log("order, ", updatedOrder)
 
-        dispatch(set(updatedOrder))
+        process(updatedOrder)
       })
       .catch((error)=>{
           console.log("error, ", error.response.data)
@@ -101,7 +122,7 @@ function Receipt(props) {
                       <hr></hr>
                     </div>
                   </div>
-                  {order.lineItems.map((lineItem) => (
+                  {order && order.lineItems.map((lineItem) => (
                   <div key={lineItem.product.uuid} className="row mb-3">
                     <div className="col-12 col-md-3">
                       <img
