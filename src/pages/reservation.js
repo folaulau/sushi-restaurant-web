@@ -4,7 +4,7 @@ import Header from "../layout/header";
 import Footer from "../layout/footer";
 import ReservationApi from "../api/ReservationApi";
 import Storage from "../store/storage";
-
+import DateTimeUtils from "../utils/datetime";
 function Reservation() {
 
   let navigate = useNavigate();
@@ -27,74 +27,10 @@ function Reservation() {
   
   useEffect(() => {
 
-    let now = new Date();
-    let hour = 10;// now.getHours();
-    let minute = now.getMinutes();
-
-    let availableSlots = []
-
-    let closeHr = 21;// 9pm
-
-    if(hour<=closeHr){
-
-      // add cushion to allow users to get to the restaurant
-      minute = (minute + 10);
-
-      for(let i = hour; i<=20 ; i++){
-
-        let ampm = i >= 12 ? 'pm' : 'am';
-
-        let displayHour = i > 12 ? (i-12) : i;
-
-        if(i == hour){
-          if(minute<15){
-            availableSlots.push(displayHour+":15 "+ampm)
-          }
-  
-          if(minute<30){
-            availableSlots.push(displayHour+":30 "+ampm)
-          }
-  
-          if(minute<45){
-            availableSlots.push(displayHour+":45 "+ampm)
-          }
-
-          if((i+1)>=12){
-            ampm = 'pm'
-          }
-
-          if(displayHour===13){
-            availableSlots.push((displayHour-1)+":00 "+ampm)
-          }else{
-            availableSlots.push((displayHour+1)+":00 "+ampm)
-          }
-
-        }else{
-
-          availableSlots.push(displayHour+":15 "+ampm)
-          availableSlots.push(displayHour+":30 "+ampm)
-          availableSlots.push(displayHour+":45 "+ampm)
-
-          if((i+1)>=12){
-            ampm = 'pm'
-          }
-
-          if((displayHour+1)===13){
-            availableSlots.push(1+":00 "+ampm)
-          }else{
-            availableSlots.push((displayHour+1)+":00 "+ampm)
-          }
-        }
-
-      }
-
-      setDateTimeOptions(availableSlots)
-
-    }
-
+    setDateTimeOptions(DateTimeUtils.getTimeSlots())
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reservation]);
+  }, []);
 
   const handleInputChange = (e) => {
     setReservation({
@@ -103,44 +39,11 @@ function Reservation() {
     });
   };
 
-  const padWithZero = (field) => {
-    if(field<=9){
-      return "0"+field;
-    }
-    return field;
-  }
-
   const create = () => {
 
     let newReservation = reservation;
 
-    let now = new Date();
-    let year = now.getFullYear();
-    let month = padWithZero(now.getMonth()+1);
-    let date = padWithZero(now.getDate());
-
-    let timeArray = newReservation.dateTime.split(" ");
-    let ampm = timeArray[1];
-    let hrTime =  timeArray[0].split(":");
-
-    let hr = parseInt(hrTime[0]);
-
-    if(ampm==="pm" && hr!=12){
-      hr = (hr+12);
-    }else{
-      hr = padWithZero(hr);
-    }
-
-    let min = padWithZero(parseInt(hrTime[1]));
-
-    let time = hr+":" + min +":00.000Z"
-
-    let dateTime = year+"-"+month+"-"+date+"T"+time;
-    //2022-09-14T1:15:00.000Z
-    //2022-09-13T22:24:57.524Z
-    // newReservation['dateTime'] = "2022-09-13T22:24:57.524Z";
-
-    newReservation['dateTime'] = dateTime;
+    newReservation['dateTime'] = DateTimeUtils.getDateTimeWithTime(newReservation.dateTime);
 
     console.log("newReservation, ", newReservation)
 
@@ -188,14 +91,6 @@ function Reservation() {
               <div className="col-12 col-md-4">
                 <div className="mb-3">
                   <label className="form-label">Number Of Guests</label>
-                  {/* <input 
-                  type="number" 
-                  className="form-control" 
-                  placeholder="2"
-                  name="numberOfPeople"
-                  value={reservation.numberOfPeople}
-                  onChange={handleInputChange}
-                  /> */}
                   <select 
                   className="form-select" 
                   name="numberOfPeople" 
