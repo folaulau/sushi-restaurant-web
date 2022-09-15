@@ -24,6 +24,9 @@ console.log("graphql url: " + process.env.REACT_APP_GRAPHQL_URL);
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+
+
 root.render(
   <Provider store={store}>
     {/* <React.StrictMode> */}
@@ -38,6 +41,7 @@ root.render(
           <Route path="cart" element={<Cart />} />
           <Route path="payment" element={<Payment />} />
           <Route path="receipt" element={<Receipt />} />
+          <Route path="*" element={<p>There's nothing here: 404!</p>} />
         </Routes>
       </BrowserRouter>
     {/* </React.StrictMode> */}
