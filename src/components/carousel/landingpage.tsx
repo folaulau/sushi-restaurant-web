@@ -3,6 +3,7 @@ import './landingpage.css';
 import rev1 from '../../images/landingpage/rev_img1.png';
 import rev2 from '../../images/landingpage/rev_img2.png';
 import rev3 from '../../images/landingpage/rev_img3.png';
+import { Link } from "react-router-dom";
 
 function LandingPage_Top() {
 
@@ -19,7 +20,7 @@ function LandingPage_Top() {
                     </div>  
                     <div className='col-6 landing-carousel-title'>
                         <h3>True Taste of Sushi</h3>
-                        <button type="button" className="btn btn-outline-primary">Order Online</button>
+                        <Link to={`/menu`} className="btn btn-outline-primary">Order Online</Link>
                     </div>  
                 </div>
             </Carousel.Item>
