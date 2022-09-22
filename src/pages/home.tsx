@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../layout/header';
 import Footer from '../layout/footer';
 import LandingPage from '../components/carousel/landingpage';
-import Menu from './menu';
+import MenuItems from '../components/menu-items';
 
 function Home() {
   return (
@@ -17,7 +17,7 @@ function Home() {
           </div>
           <div className="row mt-5">
             <div className="col-12">
-              <Menu from='home'/>
+              <MenuItems/>
             </div>
           </div>
         </div>
