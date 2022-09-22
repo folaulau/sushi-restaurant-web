@@ -236,7 +236,7 @@ function Menu(props) {
             </div>
           </div>
         </div>
-      <Footer />
+      {(props.from==='' || props.from==null) && <Footer />}
     </>
   );
 }
