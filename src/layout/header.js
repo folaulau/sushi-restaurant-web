@@ -79,6 +79,15 @@ function PublicHeader() {
     // eslint-disable-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkBackendService();
+      // check backend service every 15 minutes
+    }, 1000 * 60 * 15);
+    return () => clearInterval(interval);
+    // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
+
   const checkBackendService = () => {
     
     let info = {};
