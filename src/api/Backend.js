@@ -12,7 +12,7 @@ const BackendAPI = {
             'Content-Type': 'application/json'
         }
 
-        let url = '/';
+        let url = '';
 
         const options = {
             headers: headers
