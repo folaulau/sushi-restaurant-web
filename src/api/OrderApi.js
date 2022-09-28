@@ -17,20 +17,17 @@ const OrderApi = {
             'Content-Type': 'application/json'
         }
 
-        let url = '/orders/guest/current';
-
         if(auth==null){
             headers['x-api-key'] = xApiKey
         }else{
             headers['token'] = auth.token
-            url = '/orders/current';
         }
 
         const options = {
             headers: headers
         };
 
-        return instance.post(url, JSON.stringify(order), options);
+        return instance.post('/orders/current', JSON.stringify(order), options);
     },
     removeItem: (order) => {
 
@@ -40,20 +37,17 @@ const OrderApi = {
             'Content-Type': 'application/json'
         }
 
-        let url = '/orders/guest/current/remove-item';
-
         if(auth==null){
             headers['x-api-key'] = xApiKey
         }else{
             headers['token'] = auth.token
-            url = '/orders/current/remove-item';
         }
 
         const options = {
             headers: headers
         };
 
-        return instance.put(url, JSON.stringify(order), options);
+        return instance.put('/orders/current/remove-item', JSON.stringify(order), options);
     },
     getOrder: (uuid) => {
 
@@ -63,22 +57,17 @@ const OrderApi = {
             'Content-Type': 'application/json'
         }
 
-        let url = '/orders/guest/current';
-
         if(auth==null){
             headers['x-api-key'] = xApiKey
         }else{
             headers['token'] = auth.token
-            url = '/orders/current';
         }
-
-        url = (url + "?uuid="+uuid)
 
         const options = {
             headers: headers
         };
 
-        return instance.get(url, options);
+        return instance.get('/orders/current?uuid='+uuid, options);
     },
     confirmPayment: (order) => {
 
@@ -88,20 +77,17 @@ const OrderApi = {
             'Content-Type': 'application/json'
         }
 
-        let url = '/orders/guest/confirm-payment';
-
         if(auth==null){
             headers['x-api-key'] = xApiKey
         }else{
             headers['token'] = auth.token
-            url = '/orders/guest/confirm-payment';
         }
 
         const options = {
             headers: headers
         };
 
-        return instance.put(url, JSON.stringify(order), options);
+        return instance.put('/orders/confirm-payment', JSON.stringify(order), options);
     },
 }
 

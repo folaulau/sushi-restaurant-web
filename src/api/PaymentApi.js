@@ -17,20 +17,17 @@ const PaymentApi = {
             'Content-Type': 'application/json'
         }
 
-        let url = '/stripe/guest/paymentintent/order';
-
         if(auth==null){
             headers['x-api-key'] = xApiKey
         }else{
             headers['token'] = auth.token
-            url = '/stripe/paymentintent/order';
         }
 
         const options = {
             headers: headers
         };
 
-        return instance.post(url, JSON.stringify(payload), options);
+        return instance.post('/stripe/paymentintent/order', JSON.stringify(payload), options);
     }
 }
 

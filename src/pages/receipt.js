@@ -62,20 +62,6 @@ function Receipt(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const process = (order) => {
-
-    setOrder(order)
-
-    let lineItemTally = {}
-
-    order.lineItems.forEach((li)=>{
-        lineItemTally[li.product.uuid] = li.count;
-    });
-
-    setLineItemTally(lineItemTally)
-  }
-
-
   useEffect(() => {
     setInterval(() => {
       OrderApi.getOrder(orderUuid)
@@ -92,6 +78,19 @@ function Receipt(props) {
 
     }, 1000 * 30);
   }, [orderUuid, dispatch]);
+
+  const process = (order) => {
+
+    setOrder(order)
+
+    let lineItemTally = {}
+
+    order.lineItems.forEach((li)=>{
+        lineItemTally[li.product.uuid] = li.count;
+    });
+
+    setLineItemTally(lineItemTally)
+  }
 
   
 
