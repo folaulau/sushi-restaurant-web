@@ -1,21 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { Routes, Route } from "react-router-dom";
-import "./index.css";
 import { Provider } from 'react-redux';
 import store from './store/store';
-import Home from "./pages/home";
-import Menu from "./pages/menu";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Reservation from "./pages/reservation";
-import SignUp from "./pages/signup";
-import SignIn from "./pages/signin";
-import Cart from "./pages/cart";
-import Payment from "./pages/payment";
-import Receipt from "./pages/receipt";
-import ReservationDetails from "./pages/reservation-details";
+import AppRoutes from "./routes"
 
 console.log("app env: " + process.env.REACT_APP_ENV);
 console.log("api url: " + process.env.REACT_APP_API_URL);
@@ -25,25 +14,10 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-
-
 root.render(
   <Provider store={store}>
     {/* <React.StrictMode> */}
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="menu" element={<Menu />} />
-          <Route path="reservation" element={<Reservation />} />
-          <Route path="reservation/details" element={<ReservationDetails />} />
-          <Route path="signup" element={<SignUp />} />
-          <Route path="signin" element={<SignIn />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="payment" element={<Payment />} />
-          <Route path="receipt" element={<Receipt />} />
-          <Route path="*" element={<p>There's nothing here: 404!</p>} />
-        </Routes>
-      </BrowserRouter>
+      <AppRoutes/>
     {/* </React.StrictMode> */}
   </Provider>
 );
