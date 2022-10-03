@@ -1,11 +1,16 @@
 import React from 'react';
 import Header from '../layout/header';
 import Footer from '../layout/footer';
-import { useEffect, useState} from "react";
+import { useEffect, useState, useRef} from "react";
 import FirebaseApi from "../api/FirebaseApi";
 import UserApi from "../api/UserApi";
+import Autocomplete from "react-google-autocomplete";
 
 function Account() {
+
+  const [addressAsLine, setAddressAsLine] = useState("");
+
+  const addressUuidInput = useRef(null);
 
   const [profile, setProfile] = useState({
     id: "",
@@ -48,6 +53,7 @@ function Account() {
       let user = response.data;
       setProfile(user)
       setAddress(user.address)
+      setAddressAsLine(user.address.street)
     }).catch((error) => {
       console.error("Error: ", error);
     });
@@ -63,12 +69,22 @@ function Account() {
     
   };
 
-  const handleAddressInputChange = (e) => {
-    setAddress({
-      ...address,
-      [e.target.name]: e.target.value,
-    });
-    
+  const updateAddress = (place) => {
+    const formattedAddress = place.formatted_address;
+
+    let newAddress = {
+      street: formattedAddress.split(",")[0],
+      city: formattedAddress.split(",")[1].trim(),
+      state: formattedAddress.split(",")[2].trim().split(" ")[0],
+      zipcode: formattedAddress.split(",")[2].trim().split(" ")[1],
+      country: formattedAddress.split(",")[3].trim(),
+      latitude: place.geometry.location.lat(),
+      longitude: place.geometry.location.lng(),
+    };
+
+    setAddress(newAddress);
+
+    console.log("updated address: ", newAddress);
   };
 
   const handlePasswordInputChange = (e) => {
@@ -91,6 +107,7 @@ function Account() {
       console.log("updated profile response: ", response.data);
       setProfile(user)
       setAddress(user.address)
+      setAddressAsLine(user.address.street)
     }).catch((error) => {
       console.error("Error: ", error);
     });
@@ -178,17 +195,31 @@ function Account() {
               <div className="row">
                 <div className="col-12 col-sm-6">
                   <label className="form-label">Street</label>
-                  <input 
-                    name="street" 
-                    onChange={handleAddressInputChange}
-                    value={address.street || ''} 
-                    className="form-control" />
+                  <Autocomplete
+                    type="deliveryAddress"
+                    name="name"
+                    id="name"
+                    defaultValue={addressAsLine}
+                    ref={addressUuidInput}
+                    className="form-control"
+                    apiKey="AIzaSyD1KPd02JBlblQ9l1HMZAge0300AtbvghY"
+                    onPlaceSelected={(place, inputRef, autocomplete) =>
+                      updateAddress(place)
+                    }
+                    style={{
+                      border: '2px solid #85d8e7',
+                      color: 'black'
+                    }}
+                    options={{
+                      types: ['address'],
+                    }}
+                  />
                 </div>
                 <div className="col-12 col-sm-6">
                   <label className="form-label">Street 2</label>
                   <input 
                     name="street2" 
-                    onChange={handleAddressInputChange}
+                    disabled={true}
                     value={address.street2 || ''} 
                     className="form-control" />
                 </div>
@@ -199,7 +230,7 @@ function Account() {
                   <label className="form-label">City</label>
                   <input 
                     name="city" 
-                    onChange={handleAddressInputChange}
+                    disabled={true}
                     value={address.city || ''}
                     className="form-control" />
                 </div>
@@ -207,7 +238,7 @@ function Account() {
                   <label className="form-label">State</label>
                   <input 
                     name="state" 
-                    onChange={handleAddressInputChange}
+                    disabled={true}
                     value={address.state || ''}
                     className="form-control" />
                 </div>
@@ -215,7 +246,7 @@ function Account() {
                   <label className="form-label">Zipcode</label>
                   <input 
                     name="zipcode" 
-                    onChange={handleAddressInputChange}
+                    disabled={true}
                     value={address.zipcode || ''}
                     className="form-control" />
                 </div>
@@ -224,7 +255,7 @@ function Account() {
             </div>
           </div>
 
-          <div className="row mt-3 mb-4">
+          <div className="row mt-4 mb-4">
             <div className="col-12 col-sm-2 offset-md-10">
               <div className="d-grid gap-2">
                 <button onClick={()=>saveProfile()} className="btn btn-primary" type="button">Save</button>
@@ -260,7 +291,7 @@ function Account() {
                     className="form-control" />
                 </div>
               </div>
-              <div className="row mt-3">
+              <div className="row mt-4">
                 <div className="col-12 col-sm-2 offset-md-10">
                   <div className="d-grid gap-2">
                     <button onClick={()=>updatePassword()} className="btn btn-primary" type="button">Update</button>
