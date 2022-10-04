@@ -1,11 +1,11 @@
 import React from 'react';
 import Header from '../layout/header';
 import Footer from '../layout/footer';
-import { useEffect, useState} from "react";
+import { useEffect} from "react";
 
 function Profile() {
 
-  const [profile, setProfile] = useState({})
+  // const [profile, setProfile] = useState({})
 
   useEffect(() => {
     console.log("Profile page")
