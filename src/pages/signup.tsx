@@ -1,5 +1,5 @@
 import { useState , useEffect} from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import Header from "../layout/header";
 import Footer from "../layout/footer";
 import FirebaseApi from "../api/FirebaseApi";
@@ -8,7 +8,7 @@ import Auth from "../components/auth/auth";
 
 function SignUp() {
 
-  let navigate = useNavigate();
+  // let navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({
     email: "folaudev+"+Math.floor(Math.random() * 1000000000)+"@gmail.com",
@@ -53,7 +53,7 @@ function SignUp() {
 
             Auth.signIn(response.data);
 
-            navigate("/menu");
+            window.location.href = "/menu";
             
           }).catch((error) => {
             console.error("Error: ", error);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import logo from "../images/logo.png";
 import Auth from '../components/auth/auth';
+import "./header.css";
 import { Link } from "react-router-dom";
 import CartIcon from "../components/cart-icon";
 import BackendAPI from '../api/Backend';
@@ -27,6 +28,14 @@ function Header() {
     }).catch((error)=>{
       console.log("error, ", error)
     });
+
+  }
+
+  const signOut = () => {
+    
+    Auth.signOut();
+
+    window.location.href = "/";
 
   }
 
@@ -57,9 +66,36 @@ function Header() {
               
               <Link to="/reservation" className="me-3 py-2 text-dark text-decoration-none">Reservation</Link>
 
-              <Link to="/account" className="me-3 py-2 text-dark text-decoration-none">Account</Link>
-
               <CartIcon />
+
+              <button type='button' className="nav-link dropdown-toggle" id="acctNavbarDropdown" data-bs-toggle={`dropdown`} aria-expanded={false}>
+                <i className="fa fa-user fa-8x"></i>
+              </button>
+              <ul className="dropdown-menu" aria-labelledby="acctNavbarDropdown">
+                <li><Link to="/account" className="dropdown-item">Account</Link></li>
+                <li><Link to="/orders" className="dropdown-item">Orders</Link></li>
+                <li><Link to="/payment-method" className="dropdown-item">Payment Method</Link></li>
+                <li><hr></hr></li>
+                <li>
+                  <div className="d-grid gap-2">
+                    <button onClick={()=>signOut()} className="btn btn-default" type="button">Sign Out</button>
+                  </div>
+                </li>
+                
+              </ul>
+
+              {/* <Dropdown as={ButtonGroup} id="acct-dropdown">
+                <Dropdown.Toggle split variant="default">
+                  <button className='btn btn-default' id="acct-dropdown-btn"> <i className="fa fa-user fa-8x"></i></button>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item href="/account">Account</Dropdown.Item>
+                  <Dropdown.Item href="/orders">Orders</Dropdown.Item>
+                  <Dropdown.Item href="/paymentmethod">Payment Method</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown> */}
+      
 
             </nav>
           </div>

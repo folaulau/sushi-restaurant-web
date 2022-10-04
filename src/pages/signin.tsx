@@ -2,14 +2,14 @@ import Header from "../layout/header";
 import Footer from "../layout/footer";
 import { useState , useEffect} from "react";
 import React from 'react';
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import FirebaseApi from "../api/FirebaseApi";
 import UserApi from "../api/UserApi";
 import Auth from "../components/auth/auth";
 
 function SignIn() {
 
-  let navigate = useNavigate();
+  // let navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({
     email: "folaudev+"+Math.floor(Math.random() * 1000000000)+"@gmail.com",
@@ -53,7 +53,7 @@ function SignIn() {
 
             Auth.signIn(response.data);
 
-            navigate("/menu");
+            window.location.href = "/menu";
             
           }).catch((error) => {
             console.error("Error: ", error);
