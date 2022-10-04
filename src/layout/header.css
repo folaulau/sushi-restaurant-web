@@ -5,3 +5,8 @@
     background-color: white !important;
     box-shadow:  0 !important;
 }
+
+#signOutBtn:hover{
+    border-color: white !important;
+    background-color: transparent;
+}

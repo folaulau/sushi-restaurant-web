@@ -78,7 +78,7 @@ function Header() {
                 <li><hr></hr></li>
                 <li>
                   <div className="d-grid gap-2">
-                    <button onClick={()=>signOut()} className="btn btn-default" type="button">Sign Out</button>
+                    <button onClick={()=>signOut()} id="signOutBtn" className="btn btn-default" type="button">Sign Out</button>
                   </div>
                 </li>
                 
