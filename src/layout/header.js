@@ -73,8 +73,9 @@ function Header() {
               </button>
               <ul className="dropdown-menu" aria-labelledby="acctNavbarDropdown">
                 <li><Link to="/account" className="dropdown-item">Account</Link></li>
-                <li><Link to="/orders" className="dropdown-item">Orders</Link></li>
                 <li><Link to="/payment-method" className="dropdown-item">Payment Method</Link></li>
+                <li><Link to="/orders" className="dropdown-item">Orders</Link></li>
+                <li><Link to="/reservations" className="dropdown-item">Reservations</Link></li>
                 <li><hr></hr></li>
                 <li>
                   <div className="d-grid gap-2">
