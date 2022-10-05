@@ -36,6 +36,12 @@ function Account() {
     current: ""
   })
 
+  const [profileUpdateMessage,setProfileUpdateMessage] = useState({
+    show: false,
+    hasError: false,
+    message: ""
+  })
+
   /**
    * 1. use left side navbar
    * 2. password reset
@@ -95,6 +101,27 @@ function Account() {
     
   };
 
+  const showUpdateMessage = (hasError,message) => {
+
+    setProfileUpdateMessage({
+      show: true,
+      hasError: hasError,
+      message: message
+    })
+
+    if(hasError===false){
+      setTimeout(()=>{
+        setProfileUpdateMessage({
+          show: false,
+          hasError: false,
+          message: ""
+        })
+      }, 3000);
+    }
+    // don't remove error at all.
+    
+  }
+
   const saveProfile = () => {
 
     console.log("profile", profile)
@@ -108,8 +135,10 @@ function Account() {
       setProfile(user)
       setAddress(user.address)
       setAddressAsLine(user.address.street)
+      showUpdateMessage(false,"")
     }).catch((error) => {
       console.error("Error: ", error);
+      showUpdateMessage(true,error)
     });
   }
 
@@ -133,6 +162,28 @@ function Account() {
           
           <div className="row">
             <div className="col-12">
+
+              <div className="row">
+                <div className="col-12">
+                  {
+                    profileUpdateMessage.show && profileUpdateMessage.hasError===false && 
+
+                    <div className="alert alert-success" role={`alert`}>
+                      Profile has been updated successfully!
+                    </div>
+                  }
+                  {
+                    profileUpdateMessage.show && profileUpdateMessage.hasError===true && 
+                    
+                    <div className="alert alert alert-danger" role={`alert`}>
+                      Something went wrong!<br/>
+                      {profileUpdateMessage.message}
+                    </div>
+                  }
+                  
+                </div>
+              </div>
+            
 
               <div className="row">
                 <div className="col-12">
