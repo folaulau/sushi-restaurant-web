@@ -27,7 +27,11 @@ function Reservation() {
   
   useEffect(() => {
 
-    setDateTimeOptions(DateTimeUtils.getTimeSlots())
+    let timeSlots = DateTimeUtils.getTimeSlots();
+
+    setReservation({name:"", numberOfPeople:1, dateTime:timeSlots[0]})
+
+    setDateTimeOptions(timeSlots)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -42,6 +46,8 @@ function Reservation() {
   const create = () => {
 
     let newReservation = reservation;
+
+    console.log("newReservation.dateTime, ", newReservation.dateTime)
 
     newReservation['dateTime'] = DateTimeUtils.getDateTimeWithTime(newReservation.dateTime);
 

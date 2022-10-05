@@ -15,7 +15,7 @@ const DateTimeUtils = {
 
         let formatHoursTo12 = datetime.getHours() % 12 || 12;
         
-        return formatHoursTo12+":"+datetime.getMinutes()+" "+ampm;
+        return formatHoursTo12+":"+padWithZero(datetime.getMinutes())+" "+ampm;
     },
     getTimeSlots: () => {
 
