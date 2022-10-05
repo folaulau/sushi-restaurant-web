@@ -24,12 +24,14 @@
 .menuCardDesc{
     height: 70px;
 }
-.menuCardPrice{
-    width: 100%;
+.menuItemCardPrice{
     font-size: 18px;
     /* border: red solid 1px; */
     text-align: right !important;
     padding: 0;
+}
+.menuItemCardCountBtns{
+    /* border: solid black 1px; */
 }
 .menuCardCount{
     text-align: center !important;
@@ -53,8 +55,4 @@
     margin-left: 10px;
     margin-right: 10px;
     font-size: 18px;
-}
-.menuCardBtns{
-    /* border: solid black 1px; */
-    width: 100%;
 }

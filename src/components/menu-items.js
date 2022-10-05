@@ -208,10 +208,10 @@ function MenuItems() {
                             </div>
                           </div>
                           <div className="row">
-                            <div className="col-4 col-md-5 menuCardPrice">
+                            <div className="col-4 col-sm-5 menuItemCardPrice">
                               ${product.price.toFixed(2)}
                             </div>
-                            <div className="col-8 col-md-7 text-center menuCardBtns">
+                            <div className="col-8 col-sm-7 text-center menuItemCardCountBtns">
                             {/* style={{border: `solid 1px red`}} */}
                               <button onClick={()=>addProductToCart(product)} type="button" className="btn btn-light btn-sm"><i className="fa fa-plus"></i></button>
 
