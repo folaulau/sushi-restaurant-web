@@ -1,4 +1,4 @@
-name: Build and deploy code to prod S3/Cloudfront
+name: Deploy to prod
 
 on:
   push:
