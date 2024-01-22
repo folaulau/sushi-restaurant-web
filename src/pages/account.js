@@ -2,7 +2,6 @@ import React from 'react';
 import Header from '../layout/header';
 import Footer from '../layout/footer';
 import { useEffect, useState, useRef} from "react";
-import FirebaseApi from "../api/FirebaseApi";
 import UserApi from "../api/UserApi";
 import Autocomplete from "react-google-autocomplete";
 
@@ -146,13 +145,6 @@ function Account() {
 
     console.log("password", password)
 
-    FirebaseApi.setNewPassword(password.new)
-    .then((response) => {
-      console.log("updated password response: ", response);
-      setPassword({})
-    }).catch((error) => {
-      console.error("Error: ", error);
-    });
   }
 
   return (

@@ -2,7 +2,6 @@ import { useState , useEffect} from "react";
 // import { useNavigate } from "react-router-dom";
 import Header from "../layout/header";
 import Footer from "../layout/footer";
-import FirebaseApi from "../api/FirebaseApi";
 import UserApi from "../api/UserApi";
 import Auth from "../components/auth/auth";
 
