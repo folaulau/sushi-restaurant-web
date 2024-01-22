@@ -20,6 +20,26 @@ const UserApi = {
         };
         return instance.post('/users/authenticate', JSON.stringify(payload), options);
     },
+    signUp: (payload) => {
+
+        const options = {
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': xApiKey
+            }
+        };
+        return instance.post('/users/signup', JSON.stringify(payload), options);
+    },
+    signIn: (payload) => {
+
+        const options = {
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': xApiKey
+            }
+        };
+        return instance.post('/users/signin', JSON.stringify(payload), options);
+    },
     getProfile: () => {
 
         const options = {

@@ -7,7 +7,12 @@ const Auth = {
         return true
     },
     signOut: () => {
+        const items = { ...localStorage };
+        for (const key in items) {
+            localStorage.removeItem(key)
+        }
         localStorage.removeItem(AUTH)
+        localStorage.removeItem("token")
         return true
     },
     getAuth: () => {

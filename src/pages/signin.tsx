@@ -12,7 +12,7 @@ function SignIn() {
   // let navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({
-    email: "folaudev+"+Math.floor(Math.random() * 1000000000)+"@gmail.com",
+    email: "folaudev+660853313@gmail.com",
     password: "Test1234!"
   });
 
@@ -37,33 +37,21 @@ function SignIn() {
         return;
       }
 
-      FirebaseApi.signInWithEmail(userInfo.email, userInfo.password)
-      .then((userCredential) => {
-  
-        // console.log("userCredential", userCredential);
+      UserApi.signIn(userInfo).then((response) => {
+        console.log("response: ", response);
 
-        userCredential.user.getIdToken()
-        .then((token)=>{
-          let authentication = {
-            "token": token
-          };
+        Auth.signIn(response.data);
 
-          UserApi.authenticate(authentication).then((response) => {
-            console.log("response: ", response);
-
-            Auth.signIn(response.data);
-
-            window.location.href = "/menu";
-            
-          }).catch((error) => {
-            console.error("Error: ", error);
-            setErrorMsg(error.message)
-          });
-        });
-
-      })
-      .catch((error) => {
+        window.location.href = "/menu";
+        
+      }).catch((error) => {
+        console.error("Error msg: ", error.message);
         console.error("Error: ", error);
+        if(error.response.data){
+          setErrorMsg(error.response.data.message)
+        }else{
+          setErrorMsg(error.message+". Server may be down")
+        }
       });
   };
 
