@@ -3,12 +3,12 @@ import Header from '../layout/header';
 import Footer from '../layout/footer';
 import { useEffect} from "react";
 
-function Profile() {
+function Orders() {
 
   // const [profile, setProfile] = useState({})
 
   useEffect(() => {
-    console.log("Profile page")
+    console.log("Orders page")
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -17,11 +17,11 @@ function Profile() {
       <Header />
         <div className="container">
           
-          Profile
+          Orders
         </div>
       <Footer />
     </>
   );
 }
 
-export default Profile;
+export default Orders;

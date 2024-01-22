@@ -11,16 +11,13 @@ import Cart from "./pages/cart";
 import Payment from "./pages/payment";
 import Receipt from "./pages/receipt";
 import ReservationDetails from "./pages/reservation-details";
-import Profile from './pages/orders';
+import Orders from './pages/orders';
 import Account from './pages/account';
 import Auth from "./components/auth/auth";
 
 function AppRoutes() {
 
-  const [auth, setAuth] = useState({})
-
   useEffect(() => {
-    setAuth(Auth.getAuth());
   }, []);
 
   return (
@@ -39,10 +36,10 @@ function AppRoutes() {
 
           {/* private routes */}
           {
-            auth && 
+            Auth.isAuthenticated() && 
             <Route path="account">
               <Route path="" element={<Account />} />
-              <Route path="orders" element={<Profile />} />
+              <Route path="orders" element={<Orders />} />
             </Route>
           }
           

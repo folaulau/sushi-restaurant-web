@@ -18,6 +18,13 @@ const Auth = {
     getAuth: () => {
         let authObj = localStorage.getItem(AUTH) as string
         return (authObj===null) ? null : JSON.parse(authObj);
+    },
+    getAuthToken: () => {
+        return localStorage.getItem("token")
+    },
+    isAuthenticated: () => {
+        let authObj = localStorage.getItem(AUTH)
+        return (authObj!==null)
     }
 }
 
