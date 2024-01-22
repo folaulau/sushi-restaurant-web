@@ -13,6 +13,8 @@ function SignUp() {
     email: "folaudev+"+Math.floor(Math.random() * 1000000000)+"@gmail.com",
     phoneNumber: "3101234567",
     password: "Test1234!",
+    firstName: "John",
+    lastName: "Doe",
     confirmPassword: "Test1234!"
   });
 
@@ -99,6 +101,42 @@ function SignUp() {
               </div>
             </div>
           }
+
+          <div className="row">
+            <div className="col-12">
+            <div className="mb-3">
+              <label  className="form-label">First Name</label>
+              <input 
+              id="firstName"
+              name="firstName"
+              type="text"
+              autoComplete="firstName"
+              value={userInfo.firstName}
+              onChange={handleInputChange}
+              required
+              className="form-control" 
+              placeholder=""/>
+            </div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-12">
+            <div className="mb-3">
+              <label  className="form-label">Last Name</label>
+              <input 
+              id="lastName"
+              name="lastName"
+              type="text"
+              autoComplete="lastName"
+              value={userInfo.lastName}
+              onChange={handleInputChange}
+              required
+              className="form-control" 
+              placeholder=""/>
+            </div>
+            </div>
+          </div>
 
           <div className="row">
             <div className="col-12">
