@@ -48,3 +48,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Google Address Autocomplete
 https://console.cloud.google.com/google/maps-apis/overview
+
+
+## Copy from project
+https://velikorodnov.com/html/sushifushi/
