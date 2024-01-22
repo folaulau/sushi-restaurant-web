@@ -4,6 +4,7 @@ const Auth = {
 
     signIn: (auth: any) => {
         localStorage.setItem(AUTH, JSON.stringify(auth));
+        localStorage.setItem("token", auth.token);
         return true
     },
     signOut: () => {
@@ -20,7 +21,7 @@ const Auth = {
         return (authObj===null) ? null : JSON.parse(authObj);
     },
     getAuthToken: () => {
-        return localStorage.getItem("token")
+        return localStorage.getItem("token") as string
     },
     isAuthenticated: () => {
         let authObj = localStorage.getItem(AUTH)
