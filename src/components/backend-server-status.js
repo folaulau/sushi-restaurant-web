@@ -62,15 +62,15 @@ function BackendServerStatus(props) {
 
     BackendAPI.turnOnBackendServices()
     .then(response => {
-      console.log("turn on response 1, ", response)
+      console.log("turn on response, ", response)
     }).catch((error)=>{
-      console.log("turn on error 1, ", error)
+      console.log("turn on error, ", error)
       BackendAPI.turnOnBackendServices()
       .then(response => {
-        console.log("turn on response 2, ", response)
+        console.log("turn on response, ", response)
         checkBackendService();
       }).catch((error)=>{
-        console.log("turn on error 2, ", error)
+        console.log("turn on error, ", error)
       });
     });
   }
