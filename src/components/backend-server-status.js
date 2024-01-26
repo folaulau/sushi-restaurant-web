@@ -21,7 +21,6 @@ function BackendServerStatus(props) {
 
   const checkBackendService = () => {
     
-    let info = {};
     let status = {};
     BackendAPI.getBackendStatus()
     .then(response => {
