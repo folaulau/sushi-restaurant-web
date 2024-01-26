@@ -12,7 +12,7 @@ const BackendAPI = {
             'Content-Type': 'application/json'
         }
 
-        let url = '';
+        let url = '/sushi/servers-status';
 
         const options = {
             headers: headers
