@@ -28,7 +28,7 @@ function BackendServerStatus(props) {
       console.log("backend status response, ", response)
 
       let data = response.data;
-      info = process.env.REACT_APP_ENV ==="local" ? data : data['sushi']
+      info = data
 
       /**
        * assume that rds takes longer to finish its execution(turn on/off)
