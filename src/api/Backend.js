@@ -23,7 +23,7 @@ const BackendAPI = {
     turnOnBackendServices: () => {
 
         let headers = {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'application/json'
         }
 
         let url = '/sushi/turnon-servers';
@@ -41,7 +41,7 @@ const BackendAPI = {
     turnOffBackendServices: () => {
 
         let headers = {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'application/json'
         }
 
         let url = '/sushi/turnoff-servers';
