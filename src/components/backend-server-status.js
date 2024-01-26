@@ -27,28 +27,33 @@ function BackendServerStatus(props) {
     .then(response => {
       console.log("backend status response, ", response)
 
-      let data = response.data;
-      info = data
-
-      /**
-       * assume that rds takes longer to finish its execution(turn on/off)
-       */
-
-      if(info['db_status']==='stopped'){
-        status['down'] = true
-        status['status'] = "stopped"
-      }else if(info['db_status']==='starting'){
-        status['down'] = true
-        status['status'] = "starting up... take up to 5 minutes"
-      }else if(info['db_status']==='available' && info['ecs_api_running_count']===1){
+      if(process.env.REACT_APP_ENV === "local"){
         status['down'] = false
         status['status'] = "running"
-      }else if(info['db_status']==='stopping'){
-        status['down'] = true
-        status['status'] = "turning off(5 minutes)... wait til it's fully turned off to be turned on again"
+      }else{
+
+        let info = response.data;
+        /**
+         * assume that rds takes longer to finish its execution(turn on/off)
+         */
+
+        if(info['db_status']==='stopped'){
+          status['down'] = true
+          status['status'] = "stopped"
+        }else if(info['db_status']==='starting'){
+          status['down'] = true
+          status['status'] = "starting up... take up to 5 minutes"
+        }else if(info['db_status']==='available' && info['ecs_api_running_count']===1){
+          status['down'] = false
+          status['status'] = "running"
+        }else if(info['db_status']==='stopping'){
+          status['down'] = true
+          status['status'] = "turning off(5 minutes)... wait til it's fully turned off to be turned on again"
+        }
       }
 
       setBackendInfo(status)
+
     }).catch((error)=>{
       console.log("backend status error, ", error)
       status['down'] = true
@@ -62,15 +67,15 @@ function BackendServerStatus(props) {
 
     BackendAPI.turnOnBackendServices()
     .then(response => {
-      console.log("turn on response, ", response)
+      console.log("turn on response 1, ", response)
     }).catch((error)=>{
-      console.log("turn on error, ", error)
+      console.log("turn on error 1, ", error)
       BackendAPI.turnOnBackendServices()
       .then(response => {
-        console.log("turn on response, ", response)
+        console.log("turn on response 2, ", response)
         checkBackendService();
       }).catch((error)=>{
-        console.log("turn on error, ", error)
+        console.log("turn on error 2, ", error)
       });
     });
   }
@@ -79,28 +84,28 @@ function BackendServerStatus(props) {
     <>
       {
         backendInfo.down && 
-        <>
-          <div className='row'>
-            <div className='col-12 text-center'>
-              <div className='row'>
-                <div className='col-12'>
-                  <h5>Backend service is turned off to save money when there's no activity for 15 minutes</h5>
-                </div>
+        
+        <div className='row'>
+          <div className='col-12 text-center'>
+            <div className='row'>
+              <div className='col-12'>
+                <h5>Backend service is turned off to save money when there's no activity for 15 minutes</h5>
               </div>
-              <div className='row'>
-                <div className='col-12 col-sm-12'>
-                  backend status: {backendInfo.status}
-                  <br></br>
-                  {
-                    backendInfo.status==="stopped" && process.env.REACT_APP_ENV !=="local" && 
-                    <button onClick={()=>turnOnBackendServices()} type="button" className="btn btn-outline-primary btn-sm">Start Backend</button>
-                  }
-                  
-                </div>
+            </div>
+            <div className='row'>
+              <div className='col-12 col-sm-12'>
+                backend status: {backendInfo.status}
+                <br></br>
+                {
+                  backendInfo.status==="stopped" && process.env.REACT_APP_ENV !=="local" && 
+                  <button onClick={()=>turnOnBackendServices()} type="button" className="btn btn-outline-primary btn-sm">Start Backend</button>
+                }
+                
               </div>
             </div>
           </div>
-        </>
+        </div>
+        
       }
     </>
   );

@@ -14,6 +14,10 @@ const BackendAPI = {
 
         let url = '/sushi/servers-status';
 
+        if(process.env.REACT_APP_ENV === "local"){
+            url = '';
+        }
+
         const options = {
             headers: headers
         };
@@ -28,13 +32,15 @@ const BackendAPI = {
 
         let url = '/sushi/turnon-servers';
 
+        if(process.env.REACT_APP_ENV === "local"){
+            url = '';
+        }
+
         const options = {
             headers: headers
         };
 
         let payload = {}
-
-
 
         return instance.post(url, payload, options);
     },
@@ -46,13 +52,15 @@ const BackendAPI = {
 
         let url = '/sushi/turnoff-servers';
 
+        if(process.env.REACT_APP_ENV === "local"){
+            url = '';
+        }
+
         const options = {
             headers: headers
         };
 
         let payload = {}
-
-
 
         return instance.post(url, payload, options);
     }
