@@ -26,7 +26,7 @@ const BackendAPI = {
             'Content-Type': 'multipart/form-data'
         }
 
-        let url = '/?action=on&service=sushi';
+        let url = '/sushi/turnon-servers';
 
         const options = {
             headers: headers
@@ -44,7 +44,7 @@ const BackendAPI = {
             'Content-Type': 'multipart/form-data'
         }
 
-        let url = '/?action=off&service=sushi';
+        let url = '/sushi/turnoff-servers';
 
         const options = {
             headers: headers
