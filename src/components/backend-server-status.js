@@ -40,7 +40,7 @@ function BackendServerStatus(props) {
       }else if(info['db_status']==='starting'){
         status['down'] = true
         status['status'] = "starting up... take up to 5 minutes"
-      }else if(info['db_status']==='available' && info['ecsRunningCount']===1){
+      }else if(info['db_status']==='available' && info['ecs_api_running_count']===1){
         status['down'] = false
         status['status'] = "running"
       }else if(info['db_status']==='stopping'){
