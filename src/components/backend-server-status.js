@@ -34,16 +34,16 @@ function BackendServerStatus(props) {
        * assume that rds takes longer to finish its execution(turn on/off)
        */
 
-      if(info['rdsDBInstanceStatus']==='stopped'){
+      if(info['db_status']==='stopped'){
         status['down'] = true
         status['status'] = "stopped"
-      }else if(info['rdsDBInstanceStatus']==='starting'){
+      }else if(info['db_status']==='starting'){
         status['down'] = true
         status['status'] = "starting up... take up to 5 minutes"
-      }else if(info['rdsDBInstanceStatus']==='available' && info['ecsRunningCount']===1){
+      }else if(info['db_status']==='available' && info['ecsRunningCount']===1){
         status['down'] = false
         status['status'] = "running"
-      }else if(info['rdsDBInstanceStatus']==='stopping'){
+      }else if(info['db_status']==='stopping'){
         status['down'] = true
         status['status'] = "turning off(5 minutes)... wait til it's fully turned off to be turned on again"
       }
