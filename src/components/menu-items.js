@@ -168,7 +168,7 @@ function MenuItems() {
           <h1>Explore Our Menu</h1>
         
           <div className="row">
-            <div className="col-12 col-md-3">
+            <div className="col-12 col-sm-3">
               <ul className="menuBox">
                 {menuList.map((item) => (
                   <li className="menuItem" key={item.type}>
@@ -180,49 +180,31 @@ function MenuItems() {
                 ))}
               </ul>
             </div>
-            <div className="col-12 col-md-9">
+            <div className="col-12 col-sm-9">
               <div className="row">
                 
                   {displayList.map((product)=>(
-                    <div className="col-12 col-md-3" key={product.name}>
-                      <div className="card">
-                        <div className="card-body">
-                          <img
-                            src={product.img}
-                            alt="First slide"
-                            className="menuCardImg"
-                          />
-                          <div className="row">
-                            <div className="col-12 menuCardTitle">
-                              {product.name}
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-12 menuCardCal">
-                              {product.calories}
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-12 menuCardDesc">
-                              {product.desc}
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-4 col-sm-5 menuItemCardPrice">
-                              ${product.price.toFixed(2)}
-                            </div>
-                            <div className="col-8 col-sm-7 text-center menuItemCardCountBtns">
-                            {/* style={{border: `solid 1px red`}} */}
-                              <button onClick={()=>addProductToCart(product)} type="button" className="btn btn-light btn-sm"><i className="fa fa-plus"></i></button>
+                    <div className="col-12 col-xs-6 col-sm-6 col-md-6 col-lg-3" key={product.name}>
 
-                              {/* <OrderProductCount lineItems={lineItems} product={product} /> */}
-                              <span className="orderCount">{lineItemTally[product.uuid] ?? 0}</span>
-                                  
-                              <button onClick={()=>removeProductFromCart(product)} type="button" className="btn btn-light btn-sm"><i className="fa fa-minus"></i></button>
+                      <div className="card menu-item">
+                        <img src={product.img} className="card-img-top" alt="Salmon Roll with salmon, avocado, and cream cheese"/>
+                        <div className="card-body d-flex flex-column">
+                          <div className="mt-auto">
+                            <h5 className="card-title">{product.name}</h5>
+                            <p className="card-text"><small className="text-muted">{product.calories}</small></p>
+                            <p className="card-text">{product.desc}</p>
+                            <div className="d-flex justify-content-between align-items-center">
+                              <div className="btn-group">
+                                <button onClick={()=>removeProductFromCart(product)} type="button" className="btn btn-outline-secondary btn-sm">-</button>
+                                <button type="button" className="btn btn-outline-secondary btn-sm">{lineItemTally[product.uuid] ?? 0}</button>
+                                <button onClick={()=>addProductToCart(product)} type="button" className="btn btn-outline-secondary btn-sm">+</button>
+                              </div>
+                              <button type="button" className="btn btn-primary btn-sm">${product.price.toFixed(2)}</button>
                             </div>
                           </div>
                         </div>
                       </div>
+                 
                     </div>
                   ))}
               </div>

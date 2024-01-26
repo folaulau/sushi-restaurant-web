@@ -1,58 +1,23 @@
-
-.menuBox{
-    list-style-type: none;
-    padding: 0px;
-}
-.menuItem{
-    text-decoration: none;
-}
-.menuItemBtn{
-    text-decoration: none !important;
-    font-size: 1.5rem !important;
-}
-.menuCardImg{
-    width: 100%;
-    height: 140px;
-}
-.menuCardTitle{
-    font-weight: bold;
-    font-size: 20px;
-}
-.menuCardCal{
-    font-size: small;
-}
-.menuCardDesc{
-    height: 70px;
-}
-.menuItemCardPrice{
-    font-size: 18px;
-    /* border: red solid 1px; */
-    text-align: right !important;
-    padding: 0;
-}
-.menuItemCardCountBtns{
-    /* border: solid black 1px; */
-}
-.menuCardCount{
-    text-align: center !important;
-    font-size: 18px;
-    /* border: red solid 1px; */
-}
-.menuCardPlus{
-    /* border: red solid 1px; */
-}
-.menuCardMinus{
-    /* border: red solid 1px; */
+.menu-item {
+    height: 410px; /* Adjust the height as needed */
 }
 
-.menuCardPlusBtn{
-    width: 100%;
+@media (max-width: 575.02px) { /* Adjust for medium devices (tablets) */
+    .menu-item {
+        height: 400px; /* Height becomes auto to accommodate content */
+    }
 }
-.menuCardPlusBtn i {
-    text-align: center;
+
+/* For small to medium devices (greater than 576px and less than or equal to 768px), set the height to 300px */
+@media (min-width: 576.98px) and (max-width: 767.98px) {
+    .menu-item {
+        height: 410px;
+    }
 }
-.orderCount{
-    margin-left: 10px;
-    margin-right: 10px;
-    font-size: 18px;
+
+/* For medium devices and up (greater than 768px), set the height to 500px */
+@media (min-width: 768.02px) {
+    .menu-item {
+        height: 420px; /* Height becomes auto to accommodate content */
+    }
 }
