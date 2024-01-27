@@ -8,6 +8,7 @@ import ConfirmationModal from "../components/modal/confirmation";
 import { set } from "../store/cart"
 import Auth from "../components/auth/auth";
 import OrderApi from "../api/OrderApi";
+import OrderGraphQL from "../graphql/OrderGraphQL";
 
 function Cart(props) {
 
@@ -21,6 +22,19 @@ function Cart(props) {
 
   useEffect(() => {
     console.log("order, ",order)
+
+    OrderGraphQL.subscribeToActiveOrder()
+    .subscribe({
+      next(result) {
+
+        let activeOrder = result?.data?.orders?.[0]
+
+        console.log("activeOrder: ", activeOrder);
+
+        // setTickerActiveTrade(activeTr)
+      },
+      error(err) { console.error('err', err); },
+    });
 
     if(order.uuid!=null){
       OrderApi.getOrder(order.uuid)

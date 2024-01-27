@@ -5,6 +5,8 @@ import store from './store/store';
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AppRoutes from "./routes"
+import { ApolloProvider} from '@apollo/client';
+import GraphQLClient from "./graphql/GraphQLConfig";
 
 console.log("app env: " + process.env.REACT_APP_ENV);
 console.log("api url: " + process.env.REACT_APP_API_URL);
@@ -17,7 +19,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <Provider store={store}>
     {/* <React.StrictMode> */}
-      <AppRoutes/>
+      <ApolloProvider client={GraphQLClient}>
+        <AppRoutes/>
+      </ApolloProvider>
     {/* </React.StrictMode> */}
   </Provider>
 );
