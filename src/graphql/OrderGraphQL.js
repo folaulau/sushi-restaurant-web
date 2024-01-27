@@ -10,41 +10,54 @@ const OrderGraphQL = {
 
     subscribeToActiveOrder: () => {
       const activeOrder = gql`
-        subscription activeOrder() {
+        subscription activeOrder {
           orders(where: {current: {_eq: true}}) {
             id
             status
             total
-            tax_fee
-            stripe_fee
-            service_fee
-            prep_start_time
-            prep_end_time
-            picked_up_at
+            taxFee: tax_fee
+            stripeFee: stripe_fee
+            serviceFee: service_fee
+            prepStartTime: prep_start_time
+            prepEndTime: prep_end_time
+            pickedUpAt: picked_up_at
             uuid
-            updated_at
-            paid_at
+            updatedAt: updated_at
+            paidAt: paid_at
             paid
-            lineitems_total
-            drop_off_distance
-            delivery_method
-            delivery_fee
-            delivered_at
+            lineitemsTotal: lineitems_total
+            dropOffDistance: drop_off_distance
+            deliveryMethod: delivery_method
+            deliveryFee: delivery_fee
+            deliveredAt: delivered_at
             delivered
-            deliver_start_time
-            deleted_at
+            deliverStartTime: deliver_start_time
+            deletedAt: deleted_at
             deleted
             current
-            created_at
-            address_id
-            line_items {
+            createdAt: created_at
+            lineItems: line_items {
               id
               uuid
-              updated_at
+              updatedAt: updated_at
               total
               deleted
-              created_at
+              createdAt: created_at
               count
+              product {
+                id
+                uuid
+                type
+                title
+                rating
+                price
+                description
+                calories
+                createdAt: created_at
+                deleted
+                imageUrl: image_url
+                updatedAt: updated_at
+              }
             }
           }
         }

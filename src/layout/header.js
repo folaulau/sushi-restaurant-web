@@ -6,10 +6,15 @@ import { Link } from "react-router-dom";
 import CartIcon from "../components/cart-icon";
 import BackendAPI from '../api/Backend';
 import BackendServerStatus from '../components/backend-server-status';
+import { useDispatch } from 'react-redux'
+import { set } from "../store/cart"
+import OrderGraphQL from '../graphql/OrderGraphQL';
 
 function Header() {
 
   const [auth, setAuth] = useState({uuid:""});
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
 
@@ -17,7 +22,21 @@ function Header() {
 
     let auth = Auth.getAuth();
     setAuth(auth)
-    // eslint-disable-line react-hooks/exhaustive-deps
+
+    OrderGraphQL.subscribeToActiveOrder()
+    .subscribe({
+      next(result) {
+
+        let activeOrder = result?.data?.orders?.[0]
+
+        console.log("activeOrder: ", activeOrder);
+
+        dispatch(set(activeOrder))
+      },
+      error(err) { console.error('activeOrder err', err); },
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkBackendService = () => {

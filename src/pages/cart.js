@@ -3,52 +3,20 @@ import Footer from "../layout/footer";
 import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import "./cart.css";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import ConfirmationModal from "../components/modal/confirmation";
-import { set } from "../store/cart"
 import Auth from "../components/auth/auth";
 import OrderApi from "../api/OrderApi";
-import OrderGraphQL from "../graphql/OrderGraphQL";
 
 function Cart(props) {
 
   const order = useSelector((state) => state.cart.order)
   const lineItemTally = useSelector((state) => state.cart.lineItemTally)
 
-  const dispatch = useDispatch()
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [auth, setAuth] = useState({});
 
   useEffect(() => {
-    console.log("order, ",order)
-
-    OrderGraphQL.subscribeToActiveOrder()
-    .subscribe({
-      next(result) {
-
-        let activeOrder = result?.data?.orders?.[0]
-
-        console.log("activeOrder: ", activeOrder);
-
-        // setTickerActiveTrade(activeTr)
-      },
-      error(err) { console.error('err', err); },
-    });
-
-    if(order.uuid!=null){
-      OrderApi.getOrder(order.uuid)
-      .then((response)=>{
-        let updatedOrder = response.data;
-
-        console.log("order, ", updatedOrder)
-
-        dispatch(set(updatedOrder))
-      })
-      .catch((error)=>{
-          console.log("error, ", error.response.data)
-      });
-    }
 
     setAuth(Auth.getAuth())
 
@@ -66,10 +34,6 @@ function Cart(props) {
     OrderApi.removeItem(updatedOrder)
     .then((response)=>{
       console.log("response.data, ", response.data)
-
-        let updatedOrder = response.data;
-
-        dispatch(set(updatedOrder))
 
     })
     .catch((error)=>{
@@ -106,11 +70,6 @@ function Cart(props) {
     OrderApi.createUpdateOrder(updatedOrder)
     .then((response)=>{
       console.log("response.data, ", response.data)
-
-        let updatedOrder = response.data;
-
-        dispatch(set(updatedOrder))
-
     })
     .catch((error)=>{
         console.log("error, ", error)
@@ -138,10 +97,6 @@ function Cart(props) {
       OrderApi.removeItem(updatedOrder)
       .then((response)=>{
         console.log("response.data, ", response.data)
-  
-          let updatedOrder = response.data;
-  
-          dispatch(set(updatedOrder))
   
       })
       .catch((error)=>{
@@ -250,13 +205,13 @@ const DisplayPaymentTab  = (props) => {
     <>
       <div className="row">
         <div className="col-12 col-md-12">
-          Total ({props.order.totalItemCount} items): <span className="totalPrice">${props.order.lineItemsTotal.toFixed(2)}</span>
+          Total ({props.order.totalItemCount} items): <span className="totalPrice">${props.order.lineitemsTotal.toFixed(2)}</span>
         </div>
       </div>
       <div className="row mt-3">
         <div className="col-12 col-md-12">
           <div className="d-grid gap-2">
-            <Link to="/payment" className="btn btn-primary" disabled={(props.order.lineItemsTotal===0)}>
+            <Link to="/payment" className="btn btn-primary" disabled={(props.order.lineitemsTotal===0)}>
             Pay
             </Link>
             {/* <button className="btn btn-primary" onClick={()=>props.pay()} disabled={btnDisabled} type="button">Pay</button> */}

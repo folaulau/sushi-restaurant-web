@@ -146,15 +146,9 @@ function MenuItems() {
   }
 
   const updateOrder  = (updatedOrder) => {
-    console.log("updatedOrder, ", updatedOrder)
     OrderApi.createUpdateOrder(updatedOrder)
     .then((response)=>{
-        console.log("response.data, ", response.data)
-
-        let updatedOrder = response.data;
-
-        dispatch(set(updatedOrder))
-
+        console.log("order, ", response.data)
     })
     .catch((error)=>{
       console.log("error, ", error.data)
