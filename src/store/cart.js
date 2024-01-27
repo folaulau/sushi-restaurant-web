@@ -6,7 +6,7 @@ const storeName = "cart"
 // backend call
 var cart = Storage.getJson(storeName)
 
-let order = cart.uuid ? cart : {uuid: null, status:null, payment:{paymentMethod:{brand:"", last4:""}}, address:{}, lineItems:[], total:0, lineitemsTotal:0, totalItemCount:0 }
+let order = cart.uuid ? cart : {uuid: null, status:null, payment:{paymentMethodBrand: "", paymentMethodLast4:""}, address:{}, lineItems:[], total:0, lineitemsTotal:0, totalItemCount:0 }
 
 export const cartSlice = createSlice({
   name: storeName,

@@ -36,6 +36,22 @@ const OrderGraphQL = {
             deleted
             current
             createdAt: created_at
+            payment {
+              id
+              paid
+              paymentMethodId: payment_method_id
+              paymentMethodBrand: payment_method_brand
+              paymentMethodLast4: payment_method_last4
+              paymentMethodType: payment_method_type
+              type
+              updatedAt: updated_at
+              uuid
+              description
+              deletedAt: deleted_at
+              deleted
+              createdAt: created_at
+              amountPaid: amount_paid
+            }
             lineItems: line_items {
               id
               uuid
