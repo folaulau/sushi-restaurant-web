@@ -29,7 +29,6 @@ export const cartSlice = createSlice({
 
         state.order.totalItemCount = totalItemCount
 
-
         Storage.setJson(storeName, state.order);
 
         console.log("set new cart", state.order)
