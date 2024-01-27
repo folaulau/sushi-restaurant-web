@@ -184,7 +184,7 @@ function MenuItems() {
               <div className="row">
                 
                   {displayList.map((product)=>(
-                    <div className="col-12 col-xs-6 col-sm-6 col-md-6 col-lg-3" key={product.name}>
+                    <div className="col-12 col-xs-12 col-sm-6 col-md-6 col-lg-3" key={product.name}>
 
                       <div className="card menu-item">
                         <img src={product.img} className="card-img-top" alt="Salmon Roll with salmon, avocado, and cream cheese"/>
