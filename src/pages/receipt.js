@@ -181,7 +181,7 @@ const OrderStatus  = (props) => {
     <>
       <div className="row">
           <div className="col-12 col-md-12">
-          Total({props.order.lineItems.length} items): ${props.order.lineItemsTotal.toFixed(2)}
+          Total({props.order.lineItems.length} items): ${props.order.lineitemsTotal.toFixed(2)}
           </div>
       </div>
       <div className="row">
