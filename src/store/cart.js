@@ -6,7 +6,11 @@ const storeName = "cart"
 // backend call
 var cart = Storage.getJson(storeName)
 
-let order = cart.uuid ? cart : {uuid: null, status:null, payment:{paymentMethodBrand: "", paymentMethodLast4:""}, address:{}, lineItems:[], total:0, lineitemsTotal:0, totalItemCount:0 }
+console.log("cart, ", cart)
+
+let order = (cart && cart.uuid) ? cart : {uuid: null, status:null, payment:{paymentMethodBrand: "", paymentMethodLast4:""}, address:{}, lineItems:[], total:0, lineitemsTotal:0, totalItemCount:0 }
+
+console.log("order, ", order)
 
 export const cartSlice = createSlice({
   name: storeName,
@@ -16,20 +20,33 @@ export const cartSlice = createSlice({
   },
   reducers: {
     set: (state, action) => {
-        state.order = action.payload;
+        
+        if(action.payload === null || action.payload === undefined || action.payload === 'undefined'){
 
-        state.lineItemTally = {}
+          state.order = order
 
-        let totalItemCount = 0
+          Storage.setJson(storeName, state.order);
 
-        state.order.lineItems.forEach((li)=>{
-            state.lineItemTally[li.product.uuid] = li.count;
-            totalItemCount += li.count
-        });
+        }else{
 
-        state.order.totalItemCount = totalItemCount
+          state.order = action.payload;
 
-        Storage.setJson(storeName, state.order);
+          state.lineItemTally = {}
+
+          let totalItemCount = 0
+
+          state.order.lineItems.forEach((li) => {
+              state.lineItemTally[li.product.uuid] = li.count;
+              totalItemCount += li.count
+          });
+
+          state.order.totalItemCount = totalItemCount
+
+          Storage.setJson(storeName, state.order);
+
+        }
+
+        
 
         console.log("set new cart", state.order)
     },

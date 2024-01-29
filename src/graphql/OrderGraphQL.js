@@ -11,7 +11,7 @@ const OrderGraphQL = {
     subscribeToActiveOrder: () => {
       const activeOrder = gql`
         subscription activeOrder {
-          orders(where: {current: {_eq: true}}) {
+          orders(where: {current: {_eq: true}, paid: {_eq: false}}) {
             id
             status
             total

@@ -8,11 +8,13 @@ const Storage = {
         
         let value = localStorage.getItem(key)
 
-        if(value){
-            return JSON.parse(value);
+        console.log("value, ",value)
+
+        if(value === 'undefined' || value === undefined || value === null){
+            return {}
         }
 
-        return {}
+        return JSON.parse(value);
     },
     set: (key, value) => {
         localStorage.setItem(key, value+"")

@@ -149,6 +149,9 @@ function MenuItems() {
     OrderApi.createUpdateOrder(updatedOrder)
     .then((response)=>{
         console.log("order, ", response.data)
+
+        
+
     })
     .catch((error)=>{
       console.log("error, ", error.data)
